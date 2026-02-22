@@ -1,6 +1,6 @@
 /* TASMIK QURAN 2026 - ULTIMATE PROFESSIONAL STYLESHEET 
    Theme: Deep Sea Blue Glassmorphism (Special Edition for IMAM AIMAN)
-   Version: 7.2 (Fix Logo Overflow & Decoration)
+   Version: 7.8 (Stacked Scoring & UI Clean-up)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
@@ -31,7 +31,7 @@ html, body {
     overflow: hidden; 
 }
 
-/* 2. TOP NAVIGATION - FIXED LOGO OVERFLOW */
+/* 2. TOP LOGO - FIXED OVERFLOW */
 .btn-home-float {
     position: fixed !important;
     top: 15px !important;
@@ -46,40 +46,13 @@ html, body {
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(0,0,0,0.05);
-    overflow: hidden; /* Menghalang logo melimpah */
+    overflow: hidden;
 }
 
 .btn-home-float img {
-    width: 85%;      /* Logo tidak rapat ke tepi */
-    height: 85%;
+    width: 80%;      
+    height: 80%;
     object-fit: contain;
-}
-
-.pentashih-float {
-    position: fixed !important;
-    top: 15px !important;
-    right: 15px !important;
-    min-width: 65px;
-    height: 50px; 
-    z-index: 5000;
-    background: var(--primary-blue);
-    color: white;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #ffffff;
-    box-shadow: var(--shadow-premium);
-    padding: 5px 12px;
-}
-
-.pentashih-float small {
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-align: center;
-    line-height: 1.1;
-    text-transform: uppercase;
 }
 
 /* 3. MAIN CONTAINER & CARD */
@@ -87,8 +60,9 @@ html, body {
     background: white;
     position: relative;
     z-index: 10;
-    margin: 85px 15px 20px 15px !important; 
-    height: calc(100vh - 190px); 
+    /* Margin atas dikecilkan kerana butang jantina sudah tiada */
+    margin: 75px 15px 20px 15px !important; 
+    height: calc(100vh - 180px); 
     border-radius: 25px;
     box-shadow: var(--shadow-premium);
     display: flex;
@@ -112,52 +86,16 @@ html, body {
 
 .scroll-content::-webkit-scrollbar { display: none; }
 
-/* 4. MODE SWITCHER */
-#mode-selector-container {
-    background: #f1f6f8;
-    padding: 12px;
-    border-radius: 18px;
-    margin-bottom: 18px;
-    border: 1px dashed var(--accent-blue);
-}
-
-.mode-btn-group {
-    display: flex;
-    gap: 5px;
-    background: #e2e8f0;
-    padding: 4px;
-    border-radius: 12px;
-}
-
-.mode-btn {
-    flex: 1;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 11px;
-    cursor: pointer;
-    transition: var(--transition);
-    background: transparent;
-    color: #64748b;
-}
-
-.mode-btn.active {
-    background: var(--primary-blue);
-    color: white;
-    box-shadow: 0 4px 10px rgba(10, 77, 104, 0.2);
-}
-
-/* 5. FORM ELEMENTS */
+/* 4. FORM ELEMENTS */
 .section-group {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .form-label {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     font-weight: 800;
     color: var(--primary-blue);
     text-transform: uppercase;
@@ -174,7 +112,6 @@ html, body {
     font-size: 0.9rem;
     font-weight: 700;
     transition: var(--transition);
-    color: #1a2a33;
 }
 
 .modern-input:focus {
@@ -183,12 +120,7 @@ html, body {
     outline: none;
 }
 
-.modern-input.manual-active {
-    border: 2px solid var(--manual-color) !important;
-    background: #fffcf0 !important;
-}
-
-/* 6. WHEEL PICKER UX */
+/* 5. WHEEL PICKER & RATING STYLES (STACKED) */
 .wheel-picker {
     background: #f1f6f8;
     border: 2px solid #e1e9ed;
@@ -209,7 +141,6 @@ html, body {
     font-weight: 700;
     color: #94a3b8;
     border: 1px solid #e1e9ed;
-    transition: var(--transition);
 }
 
 .wheel-item.selected {
@@ -218,20 +149,47 @@ html, body {
     border-color: var(--primary-blue);
 }
 
-/* 7. ROW GRID */
+/* Kotak Khas untuk Skor (Tajwid & Fasohah Atas-Bawah) */
+.grading-box {
+    background: #f8fafc;
+    border: 2px solid #e1e9ed;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.grading-item {
+    margin-bottom: 15px;
+}
+
+.divider-thin {
+    height: 1px;
+    background: #e1e9ed;
+    margin: 15px 0;
+}
+
+/* Nombor 1-5 tersebar seimbang */
+.rating-picker {
+    justify-content: space-around;
+}
+
+.rating-picker .wheel-item {
+    flex: 1;
+    text-align: center;
+    margin: 0 2px;
+    padding: 12px 0;
+}
+
+/* 6. GRID LAYOUT FOR M/S & AYAT */
 .row-ayat {
     display: flex;
     gap: 10px;
 }
-
 .row-ayat > div { flex: 1; }
 
-/* 8. ACTION BUTTONS (FAB) */
+/* 7. ACTION BUTTONS (FAB) */
 .action-buttons {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     height: 100px;
     pointer-events: none;
     z-index: 6000;
@@ -256,40 +214,24 @@ html, body {
 .btn-record { left: 25px !important; background: #ff4757 !important; }
 .fab-send { right: 25px !important; background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%) !important; }
 
-/* 9. UTILS & OVERLAY */
-.d-none { display: none !important; }
-
-.divider {
-    height: 2px;
-    background: #e1e9ed;
-    margin: 15px 0;
-}
-
+/* 8. OVERLAY & STATUS */
 #statusOverlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(10, 77, 104, 0.95);
+    background: rgba(10, 77, 104, 0.96);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-#recordStatus {
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-align: center;
-    margin-top: 5px;
-    color: #ff4757;
+.d-none { display: none !important; }
+
+/* 9. CLEAN UP */
+.pentashih-float, .header-bg-decoration, .bg-icon {
+    display: none !important;
 }
 
-/* 10. DECORATION & CLEANUP FIX */
-/* Memastikan sebarang elemen luar tidak menutup skrin utama */
-.header-bg-decoration, .bg-icon, .decoration-img {
-    display: none !important; /* Tutup terus jika tidak perlu */
-}
-
-/* Membersihkan background daripada elemen mengganggu */
 body::before, body::after {
     display: none !important;
 }
