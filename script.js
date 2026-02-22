@@ -1,30 +1,24 @@
 /**
- * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V8.2)
+ * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V10.2)
  * ---------------------------------------------------
- * Khusus: REPO USTAZ AIMAN
- * Update: Fix Path & UI alignment
+ * Khusus: REPO USTAZ AIMAN (Dedicated Final Fix)
  */
 
-// 1. KONFIGURASI GLOBAL
 const CONFIG = {
-    // Pastikan URL GAS ini betul
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
     FILES: {
-        // BUANG ./ di depan nama fail
         PESERTA: "peserta_kumpulan_aiman.hjson", 
         SILIBUS: "silibus.hjson"
     }
 };
 
-// 2. STATE MANAGEMENT
 let state = {
     currentUstaz: "USTAZ AIMAN",
     dataPeserta: [], 
     dataSilibus: {},
-    isManualMode: false,
     selected: {
         peserta: "",
-        jantina: "PEREMPUAN", // Default Perempuan untuk kumpulan Aiman
+        jantina: "PEREMPUAN", 
         tahap: "1",
         surah: "",
         muka: "",
@@ -37,40 +31,44 @@ let state = {
     audioChunks: []
 };
 
-// 3. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
-    setupEventListeners();
+    // Pastikan library Hjson sedia
+    if (typeof Hjson === 'undefined') {
+        console.error("Library Hjson gagal dimuatkan!");
+        alert("Ralat Sistem: Library Hjson tidak ditemui. Sila refresh.");
+        return;
+    }
     await loadInitialData();
     renderTahapPicker();
     renderRatingPickers();
 });
 
-// 4. DATA LOADING
 async function loadInitialData() {
-    const ts = new Date().getTime(); 
+    const ts = Date.now(); 
     try {
         const [resP, resS] = await Promise.all([
             fetch(`${CONFIG.FILES.PESERTA}?v=${ts}`),
             fetch(`${CONFIG.FILES.SILIBUS}?v=${ts}`)
         ]);
 
-        if(!resP.ok || !resS.ok) throw new Error("Fail pangkalan data tidak dapat diakses.");
+        if(!resP.ok || !resS.ok) throw new Error("Fail pangkalan data (HJSON) tidak ditemui di GitHub.");
 
         const textP = await resP.text();
         const textS = await resS.text();
 
+        // Gunakan Hjson dengan selamat
         state.dataPeserta = Hjson.parse(textP);
         state.dataSilibus = Hjson.parse(textS);
 
+        console.log("Data Pelajar Dimuatkan:", state.dataPeserta.length);
         renderPesertaPicker();
 
     } catch (err) {
-        console.error("❌ Ralat:", err.message);
-        alert("Ralat: Fail " + CONFIG.FILES.PESERTA + " tidak ditemui di pelayan.");
+        console.error("❌ Ralat Loading:", err.message);
+        document.getElementById('peserta-wrapper').innerHTML = `<div style="color:red; padding:10px;">Ralat: ${err.message}</div>`;
     }
 }
 
-// 5. UI RENDERING
 function renderPesertaPicker() {
     const wrapper = document.getElementById('peserta-wrapper');
     if(!wrapper || !state.dataPeserta) return;
@@ -83,7 +81,6 @@ function renderPesertaPicker() {
             highlightSelected('peserta-wrapper', index);
         });
         wrapper.appendChild(item);
-        if(index === 0) item.click();
     });
 }
 
@@ -106,10 +103,12 @@ function renderTahapPicker() {
 
 function renderSurahPicker(tahap) {
     const wrapper = document.getElementById('surah-wrapper');
-    if(!wrapper || !state.dataSilibus[tahap]) return;
+    if(!wrapper) return;
     wrapper.innerHTML = "";
     
-    state.dataSilibus[tahap].forEach((s, index) => {
+    const surahList = state.dataSilibus[tahap] || [];
+    
+    surahList.forEach((s, index) => {
         const item = createWheelItem(`${s.nama} <small>(m/s ${s.ms})</small>`, () => {
             state.selected.surah = s.nama;
             document.getElementById('muka').value = s.ms;
@@ -141,9 +140,9 @@ function createWheelItem(content, onClick) {
     const div = document.createElement('div');
     div.className = 'wheel-item';
     div.innerHTML = content;
-    div.onclick = () => { 
+    div.onclick = (e) => { 
         onClick(); 
-        div.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); 
+        e.target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); 
     };
     return div;
 }
@@ -170,20 +169,26 @@ async function toggleRecording() {
             };
             state.mediaRecorder.start();
             state.isRecording = true;
-            btn.style.background = "#000";
+            btn.classList.add('recording-active');
+            btn.innerHTML = '<i class="fa-solid fa-stop"></i>';
         } catch (err) { alert("Sila benarkan akses mikrofon!"); }
     } else {
         state.mediaRecorder.stop();
         state.isRecording = false;
-        btn.style.background = "#ff4757";
+        btn.classList.remove('recording-active');
+        btn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
     }
 }
 
 async function hantarTasmik() {
     const btn = document.getElementById('submitBtn');
-    const msValue = document.getElementById('muka').value;
+    const msInput = document.getElementById('muka');
+    const msValue = msInput ? msInput.value : "";
 
-    if(!state.selected.peserta || !msValue) return alert("Pilih Peserta & Muka Surat!");
+    if(!state.selected.peserta || !msValue) {
+        alert("Pilih Peserta & Masukkan Muka Surat!");
+        return;
+    }
 
     btn.disabled = true;
     document.getElementById('statusOverlay').classList.remove('d-none');
@@ -204,7 +209,7 @@ async function hantarTasmik() {
         tahap: "Tahap " + state.selected.tahap,
         surah: state.selected.surah,
         mukasurat: msValue,
-        ayat_range: document.getElementById('ayat_range').value,
+        ayat_range: document.getElementById('ayat_range').value || "",
         tajwid: state.selected.tajwid,
         fasohah: state.selected.fasohah,
         ulasan: document.getElementById('catatan').value || "-",
@@ -212,16 +217,20 @@ async function hantarTasmik() {
     };
 
     try {
-        await fetch(CONFIG.GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        // Tukar mode kepada 'cors' jika GAS Ustaz sudah disetup dengan betul, 
+        // namun 'no-cors' adalah yang paling selamat untuk elak error merah walaupun data masuk.
+        await fetch(CONFIG.GAS_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload) 
+        });
+        
         alert("✅ Rekod berjaya dihantar!");
         location.reload();
     } catch (e) {
-        alert("Ralat penghantaran!");
+        alert("Ralat penghantaran! Sila semak internet.");
         btn.disabled = false;
         document.getElementById('statusOverlay').classList.add('d-none');
     }
-}
-
-function setupEventListeners() {
-    // Kosong buat masa ini jika tiada butang mod manual
 }
