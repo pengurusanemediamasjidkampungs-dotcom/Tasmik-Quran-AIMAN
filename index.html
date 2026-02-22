@@ -5,24 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TASMIK DIGITAL - AIMAN</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/hjson@3.2.2/bundle/hjson.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hjson/3.2.2/hjson.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="btn-home-float">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Akebono_School_Logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3075/3075908.png'">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwY8E5K6m95LhshD_B096-7Y-Yh_2-0vIuKk-r_i-W9L_92x3Fp0iY6Wv8u6o5Q/s1600/logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3075/3075908.png'">
     </div>
 
     <input type="hidden" id="jantina" value="LELAKI">
+    <input type="hidden" id="ayat_mula" value="1">
+    <input type="hidden" id="ayat_akhir" value="1">
+    <input type="hidden" id="jenis_bacaan" value="Tasmik Baru">
 
     <div class="main-card">
         <div class="scroll-content">
             
             <div class="section-group">
                 <label class="form-label"><i class="fa-solid fa-user-graduate"></i> PILIH PESERTA</label>
-                <div id="peserta-wrapper" class="wheel-picker"></div>
+                <div id="peserta-wrapper" class="wheel-picker">
+                    <div style="padding:10px; color:#999;">Memuatkan nama pelajar...</div>
+                </div>
             </div>
 
             <div class="section-group">
@@ -54,13 +59,9 @@
                 </div>
             </div>
 
-            <input type="hidden" id="ayat_mula" value="1">
-            <input type="hidden" id="ayat_akhir" value="1">
-            <input type="hidden" id="jenis_bacaan" value="Tasmik Baru">
-
             <div class="divider"></div>
 
-            <div class="section-group grading-box">
+            <div class="grading-box">
                 <div class="grading-item">
                     <label class="form-label"><i class="fa-solid fa-star"></i> SKOR TAJWID</label>
                     <div id="tajwid-wrapper" class="wheel-picker rating-picker"></div>
@@ -74,25 +75,25 @@
                 </div>
             </div>
 
-            <div class="section-group">
+            <div class="section-group" style="margin-top: 20px;">
                 <label class="form-label">CATATAN & ULASAN</label>
-                <textarea id="catatan" class="modern-input" rows="3" placeholder="Tulis ulasan bacaan pelajar..."></textarea>
+                <textarea id="catatan" class="modern-input" rows="3" placeholder="Tulis ulasan bacaan pelajar di sini..."></textarea>
             </div>
 
             <div id="audio-container" class="section-group d-none">
                 <label class="form-label">PREVIEW RAKAMAN</label>
                 <audio id="audioPlayback" controls style="width: 100%;"></audio>
-                <p id="recordStatus"></p>
+                <p id="recordStatus" style="font-size: 0.7rem; color: #ff4757; text-align: center; margin-top: 5px;"></p>
             </div>
 
         </div>
     </div>
 
     <div class="action-buttons">
-        <button id="recordBtn" class="btn-record" onclick="toggleRecording()">
+        <button id="recordBtn" class="btn-record" title="Rakam Suara" onclick="toggleRecording()">
             <i class="fa-solid fa-microphone"></i>
         </button>
-        <button id="submitBtn" class="fab-send" onclick="hantarTasmik()">
+        <button id="submitBtn" class="fab-send" title="Hantar Rekod" onclick="hantarTasmik()">
             <i class="fa-solid fa-paper-plane"></i>
         </button>
     </div>
@@ -100,7 +101,7 @@
     <div id="statusOverlay" class="d-none">
         <div style="text-align: center; color: white;">
             <i class="fa-solid fa-spinner fa-spin fa-3x"></i>
-            <p style="margin-top: 15px; font-weight: 800; letter-spacing: 1px;">MENGHANTAR REKOD...</p>
+            <p style="margin-top: 15px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">Menghantar Rekod...</p>
         </div>
     </div>
 
