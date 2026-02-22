@@ -1,0 +1,279 @@
+/* TASMIK QURAN 2026 - ULTIMATE PROFESSIONAL STYLESHEET 
+   Theme: Deep Sea Blue Glassmorphism (Special Edition for IMAM AIMAN)
+   Version: 6.0 (Julat Ayat, Jenis Bacaan & Grid Precision Fix)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+    /* Khusus untuk Imam Aiman - Tema Biru Eksklusif */
+    --primary-blue: #0a4d68; 
+    --accent-blue: #088395;
+    --soft-bg: #f0f4f7;
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --shadow-premium: 0 10px 30px rgba(10, 77, 104, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1. RESET & FOUNDATION */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--soft-bg);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #1a2a33;
+    overflow: hidden; 
+}
+
+/* 2. TOP NAVIGATION */
+.btn-home-float {
+    position: fixed !important;
+    top: 15px !important;
+    left: 15px !important;
+    width: 50px !important; 
+    height: 50px !important;
+    z-index: 5000;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn-home-float img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    padding: 4px; 
+}
+
+.pentashih-float {
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    min-width: 65px;
+    height: 50px; 
+    z-index: 5000;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: var(--shadow-premium);
+    padding: 5px 12px;
+    cursor: pointer;
+}
+
+.pentashih-float small {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+/* 3. MAIN CONTAINER & CARD */
+.main-card {
+    background: white;
+    margin: 85px 15px 20px 15px !important; 
+    height: calc(100vh - 190px); 
+    border-radius: 25px;
+    box-shadow: var(--shadow-premium);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.03);
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.scroll-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: none; 
+}
+
+.scroll-content::-webkit-scrollbar { display: none; }
+
+/* 4. FORM ELEMENTS & GRID FIX */
+.section-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.modern-input {
+    width: 100%;
+    background: #f1f6f8;
+    border: 2px solid #e1e9ed;
+    border-radius: 12px;
+    padding: 12px 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: var(--transition);
+    color: #1a2a33;
+    appearance: none;
+}
+
+.modern-input:focus {
+    border-color: var(--accent-blue);
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(8, 131, 149, 0.1);
+}
+
+/* 5. WHEEL PICKER UX (HORIZONTAL SCROLL) */
+.wheel-picker {
+    background: #f1f6f8;
+    border: 2px solid #e1e9ed;
+    border-radius: 15px;
+    padding: 5px;
+    overflow-x: auto;
+    display: flex;
+    gap: 8px;
+    scrollbar-width: none;
+}
+
+.wheel-picker::-webkit-scrollbar { display: none; }
+
+.wheel-item {
+    flex: 0 0 auto;
+    padding: 10px 18px;
+    background: white;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #94a3b8;
+    border: 1px solid #e1e9ed;
+    transition: var(--transition);
+}
+
+.wheel-item.selected {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+/* 6. JULAT AYAT & RATING ROW GRID */
+.row-ayat {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.row-ayat > div {
+    flex: 1;
+}
+
+.rating-picker .wheel-item {
+    padding: 10px 15px;
+    min-width: 45px;
+    text-align: center;
+}
+
+/* 7. ACTION BUTTONS (FAB) */
+.action-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    pointer-events: none;
+    z-index: 6000;
+}
+
+.btn-record, .fab-send {
+    pointer-events: auto;
+    position: absolute !important;
+    bottom: 25px !important;
+    width: 65px !important;
+    height: 65px !important;
+    border-radius: 50% !important;
+    border: 5px solid #ffffff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    font-size: 1.4rem !important;
+    box-shadow: 0 8px 25px rgba(10, 77, 104, 0.25) !important;
+    transition: var(--transition);
+}
+
+.btn-record {
+    left: 25px !important;
+    background: #ff4757 !important;
+}
+
+.btn-record.recording {
+    animation: pulse 1.5s infinite;
+    background: #ff0000 !important;
+}
+
+.fab-send {
+    right: 25px !important;
+    background: #00d2ff !important; /* Biru terang untuk Aiman */
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%) !important;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+}
+
+/* 8. OVERLAY & LOADER */
+#statusOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 77, 104, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* 9. DIVIDER */
+.divider {
+    height: 2px;
+    background: #e1e9ed;
+    margin: 15px 0;
+}
+
+/* 10. RESPONSIVE FIXES */
+@media (max-width: 380px) {
+    .main-card { 
+        margin-top: 80px !important; 
+        height: calc(100vh - 175px); 
+    }
+}
