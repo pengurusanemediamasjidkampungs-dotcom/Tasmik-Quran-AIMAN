@@ -1,15 +1,14 @@
 /**
- * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V3.0)
+ * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V7.0)
  * ---------------------------------------------------
- * Integrasi: GitHub Pages + Google Apps Script + Telegram Bot
- * Versi Khusus: USTAZ AIMAN (Zon Muraja'ah + Manual Mode)
+ * Integrasi: GitHub Pages + Google Apps Script (Backend)
+ * Security: Telegram Token moved to GAS (Server-Side)
+ * Updates: Tahap 7 Support & Audio Base64 Forwarding
  */
 
 // 1. KONFIGURASI GLOBAL
 const CONFIG = {
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
-    BOT_TOKEN: "8154726215:AAG-Pa2UNRHBxP0-j3fffQJ0rMBE8hZt5Rw",
-    CHAT_ID: "-1003513910680",
     FILES: {
         LELAKI: "./peserta_lelaki.hjson",
         PEREMPUAN: "./peserta_perempuan.hjson",
@@ -19,7 +18,7 @@ const CONFIG = {
 
 // 2. STATE MANAGEMENT
 let state = {
-    currentUstaz: "USTAZ AIMAN",
+    currentUstaz: localStorage.getItem('ustaz_nama') || "USTAZ AIMAN",
     dataPesertaLelaki: [],
     dataPesertaPerempuan: [],
     dataSilibus: {},
@@ -30,8 +29,8 @@ let state = {
         tahap: "1",
         surah: "",
         muka: "",
-        tajwid: "5",
-        fasohah: "5"
+        tajwid: "3",
+        fasohah: "3"
     },
     isRecording: false,
     audioBlob: null,
@@ -41,10 +40,10 @@ let state = {
 
 // 3. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("🚀 System Initializing for AIMAN...");
+    console.log("🚀 AIMAN PRO System Initializing...");
+    updateUstazUI();
     await loadInitialData();
     setupEventListeners();
-    setupModeSwitcher();
     renderTahapPicker();
     renderRatingPickers();
 });
@@ -64,19 +63,18 @@ async function loadInitialData() {
         state.dataSilibus = Hjson.parse(await resS.text());
 
         renderPesertaPicker();
-        console.log("✅ Data Loaded");
+        console.log("✅ Data HJSON Loaded");
     } catch (err) {
-        console.error("❌ Load Error:", err);
-        alert("Gagal memuatkan data. Sila refresh.");
+        console.error("❌ Load Error:", err.message);
     }
 }
 
 // 5. UI RENDERING
 function renderPesertaPicker() {
-    const jantina = document.getElementById('jantina').value;
-    state.selected.jantina = jantina;
+    const jantina = document.getElementById('jantina')?.value || "LELAKI";
     const senarai = jantina === "LELAKI" ? state.dataPesertaLelaki : state.dataPesertaPerempuan;
     const wrapper = document.getElementById('peserta-wrapper');
+    if(!wrapper) return;
     wrapper.innerHTML = "";
 
     senarai.forEach((p, index) => {
@@ -85,92 +83,77 @@ function renderPesertaPicker() {
             highlightSelected('peserta-wrapper', index);
         });
         wrapper.appendChild(item);
+        if(index === 0) item.click();
     });
 }
 
 function renderTahapPicker() {
     const wrapper = document.getElementById('tahap-wrapper');
+    if(!wrapper) return;
     wrapper.innerHTML = "";
-    const tahaps = ["1", "2", "3", "4", "5", "6", "7"];
+
+    const senaraiTahap = ["1", "2", "3", "4", "5", "6", "7"];
     
-    tahaps.forEach((t, index) => {
+    senaraiTahap.forEach((t, index) => {
         const item = createWheelItem(`TAHAP ${t}`, () => {
             state.selected.tahap = t;
             highlightSelected('tahap-wrapper', index);
             
-            // Logik Switcher Tahap 7
-            const switcher = document.getElementById('mode-selector-container');
-            if(t === "7") {
-                switcher.classList.remove('d-none');
+            // Logik Tahap 7 (Muraja'ah)
+            const modeContainer = document.getElementById('mode-selector-container');
+            if (t === "7") {
+                modeContainer.classList.remove('d-none');
+                setMode(false); // Default Auto
             } else {
-                switcher.classList.add('d-none');
-                setManualMode(false); // Reset ke auto jika tukar tahap lain
+                modeContainer.classList.add('d-none');
+                setMode(false);
+                renderSurahPicker(t);
             }
-            
-            renderSurahPicker(t);
         });
         wrapper.appendChild(item);
         if(index === 0) item.click();
     });
 }
 
-function renderSurahPicker(tahap) {
-    const wrapper = document.getElementById('surah-wrapper');
-    wrapper.innerHTML = "";
-    let senaraiSurah = state.dataSilibus[tahap] || [];
-
-    senaraiSurah.forEach((s, index) => {
-        const item = createWheelItem(s.nama, () => {
-            state.selected.surah = s.nama;
-            highlightSelected('surah-wrapper', index);
-            
-            // Auto-fill jika bukan manual mode
-            if(!state.isManualMode) {
-                document.getElementById('muka').value = s.ms;
-                // Jika tahap 7, guna input ayat_range, jika lain guna ayat_mula/akhir (ikut UI asal)
-                const inputAyat = document.getElementById('ayat_range') || document.getElementById('ayat_akhir');
-                if(inputAyat) inputAyat.value = s.ayat;
-                if(document.getElementById('ayat_mula')) document.getElementById('ayat_mula').value = 1;
-            }
-        });
-        wrapper.appendChild(item);
-    });
-}
-
-// 6. MODE SWITCHER LOGIC
-function setupModeSwitcher() {
+function setMode(manual) {
+    state.isManualMode = manual;
     const btnAuto = document.getElementById('btn-mode-auto');
     const btnManual = document.getElementById('btn-mode-manual');
-    if(!btnAuto || !btnManual) return;
+    const surahInput = document.getElementById('surah-wrapper');
+    const mukaInput = document.getElementById('muka');
 
-    btnAuto.onclick = () => setManualMode(false);
-    btnManual.onclick = () => setManualMode(true);
-}
-
-function setManualMode(isManual) {
-    state.isManualMode = isManual;
-    const btnAuto = document.getElementById('btn-mode-auto');
-    const btnManual = document.getElementById('btn-mode-manual');
-    const inputAyat = document.getElementById('ayat_range');
-    const inputMuka = document.getElementById('muka');
-
-    if(isManual) {
+    if (manual) {
         btnManual.classList.add('active');
         btnAuto.classList.remove('active');
-        inputAyat.classList.add('manual-active');
-        inputAyat.value = "";
-        inputMuka.value = "";
-        inputAyat.focus();
+        mukaInput.classList.add('manual-active');
+        // Tukar Surah Picker kepada "Input Manual" jika perlu atau biarkan
     } else {
         btnAuto.classList.add('active');
         btnManual.classList.remove('active');
-        inputAyat.classList.remove('manual-active');
-        // Trigger balik auto-fill dari surah terpilih
+        mukaInput.classList.remove('manual-active');
         renderSurahPicker(state.selected.tahap);
     }
 }
 
-// 7. RATING & UTILS
+function renderSurahPicker(tahap) {
+    const wrapper = document.getElementById('surah-wrapper');
+    if(!wrapper) return;
+    wrapper.innerHTML = "";
+    
+    let senaraiSurah = state.dataSilibus[tahap] || [];
+
+    senaraiSurah.forEach((s, index) => {
+        const item = createWheelItem(`${s.nama} <small>(m/s ${s.ms})</small>`, () => {
+            state.selected.surah = s.nama;
+            document.getElementById('muka').value = s.ms;
+            document.getElementById('ayat_range').value = `1-${s.ayat || '?'}`;
+            highlightSelected('surah-wrapper', index);
+        });
+        wrapper.appendChild(item);
+        if(index === 0) item.click();
+    });
+}
+
 function renderRatingPickers() {
     ['tajwid', 'fasohah'].forEach(type => {
         const wrapper = document.getElementById(`${type}-wrapper`);
@@ -191,25 +174,19 @@ function createWheelItem(content, onClick) {
     const div = document.createElement('div');
     div.className = 'wheel-item';
     div.innerHTML = content;
-    div.onclick = () => {
-        onClick();
-        div.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-    };
+    div.onclick = () => { onClick(); div.scrollIntoView({ behavior: 'smooth', inline: 'center' }); };
     return div;
 }
 
 function highlightSelected(wrapperId, index) {
-    const el = document.getElementById(wrapperId);
-    if(!el) return;
-    Array.from(el.children).forEach(item => item.classList.remove('selected'));
-    if(el.children[index]) el.children[index].classList.add('selected');
+    const items = document.getElementById(wrapperId).children;
+    Array.from(items).forEach(item => item.classList.remove('selected'));
+    if(items[index]) items[index].classList.add('selected');
 }
 
-// 8. RECORDING ENGINE
+// 6. AUDIO ENGINE
 async function toggleRecording() {
     const btn = document.getElementById('recordBtn');
-    const statusText = document.getElementById('recordStatus');
-
     if (!state.isRecording) {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -220,82 +197,79 @@ async function toggleRecording() {
                 state.audioBlob = new Blob(state.audioChunks, { type: 'audio/ogg; codecs=opus' });
                 document.getElementById('audioPlayback').src = URL.createObjectURL(state.audioBlob);
                 document.getElementById('audio-container').classList.remove('d-none');
-                statusText.innerText = "RAKAMAN SEDIA";
             };
             state.mediaRecorder.start();
             state.isRecording = true;
             btn.classList.add('recording');
-            statusText.innerText = "MERAKAM...";
-        } catch (err) { alert("Mikrofon diperlukan!"); }
+        } catch (err) { alert("Mikrofon ralat!"); }
     } else {
         state.mediaRecorder.stop();
         state.isRecording = false;
         btn.classList.remove('recording');
-        statusText.innerText = "KLIK UNTUK RAKAM";
     }
 }
 
-// 9. SUBMISSION
+// 7. SUBMISSION (SECURE FORWARDING)
 async function hantarTasmik() {
     const btn = document.getElementById('submitBtn');
+    const overlay = document.getElementById('statusOverlay');
+    
+    let audioBase64 = null;
+    if (state.audioBlob) {
+        audioBase64 = await new Promise(r => {
+            const reader = new FileReader();
+            reader.onloadend = () => r(reader.result.split(',')[1]);
+            reader.readAsDataURL(state.audioBlob);
+        });
+    }
+
     const payload = {
         ustaz: state.currentUstaz,
         peserta: state.selected.peserta,
-        jenis_bacaan: document.getElementById('jenis_bacaan').value,
         tahap: "Tahap " + state.selected.tahap,
         surah: state.selected.surah,
         mukasurat: document.getElementById('muka').value,
-        ayat: document.getElementById('ayat_range') ? document.getElementById('ayat_range').value : `${document.getElementById('ayat_mula').value}-${document.getElementById('ayat_akhir').value}`,
+        ayat_range: document.getElementById('ayat_range').value,
         tajwid: state.selected.tajwid,
         fasohah: state.selected.fasohah,
-        ulasan: document.getElementById('catatan').value || "-"
+        ulasan: document.getElementById('catatan').value,
+        audioData: audioBase64
     };
 
-    if (!payload.peserta || !payload.mukasurat) return alert("Sila lengkapkan pilihan!");
-    
+    if(!payload.peserta || !payload.mukasurat) return alert("Lengkapkan borang!");
+
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENGHANTAR...';
+    overlay.classList.remove('d-none');
 
     try {
-        // 1. Google Sheets
-        await fetch(CONFIG.GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-
-        // 2. Telegram
-        const formData = new FormData();
-        formData.append('chat_id', CONFIG.CHAT_ID);
-        const caption = `🎙️ *REKOD TASMIK DIGITAL (AIMAN)*\n` +
-                        `──────────────────\n` +
-                        `👤 *Nama:* ${payload.peserta}\n` +
-                        `📖 *Surah:* ${payload.surah}\n` +
-                        `📄 *Muka:* ${payload.mukasurat}\n` +
-                        `🔢 *Ayat:* ${payload.ayat}\n` +
-                        `✨ *T:* ${payload.tajwid} | *F:* ${payload.fasohah}\n` +
-                        `🎙️ *Ustaz:* AIMAN`;
-        
-        if (state.audioBlob) {
-            formData.append('voice', state.audioBlob, 'tasmik.ogg');
-            formData.append('caption', caption);
-            formData.append('parse_mode', 'Markdown');
-            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendVoice`, { method: 'POST', body: formData });
-        } else {
-            // Hantar text sahaja jika tiada audio
-            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ chat_id: CONFIG.CHAT_ID, text: caption, parse_mode: 'Markdown' })
-            });
-        }
-
-        alert("✅ Rekod Berjaya Dihantar!");
+        await fetch(CONFIG.GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
+        });
+        alert("✅ Rekod berjaya dihantar!");
         location.reload();
-    } catch (err) {
-        alert("Ralat! Sila cuba lagi.");
+    } catch (e) {
+        alert("Ralat!");
         btn.disabled = false;
+        overlay.classList.add('d-none');
     }
+}
+
+// 8. UTILS
+function updateUstazUI() {
+    const floatSmall = document.querySelector('.pentashih-float small');
+    if(floatSmall) floatSmall.innerHTML = `PENTASHIH<br>${state.currentUstaz.replace("USTAZ ", "")}`;
+}
+
+function toggleUstaz() {
+    state.currentUstaz = state.currentUstaz.includes("AIMAN") ? "USTAZ NUAIM" : "USTAZ AIMAN";
+    localStorage.setItem('ustaz_nama', state.currentUstaz);
+    updateUstazUI();
 }
 
 function setupEventListeners() {
     document.getElementById('jantina').addEventListener('change', renderPesertaPicker);
+    document.getElementById('btn-mode-auto').onclick = () => setMode(false);
+    document.getElementById('btn-mode-manual').onclick = () => setMode(true);
 }
-
-window.onload = loadInitialData;
