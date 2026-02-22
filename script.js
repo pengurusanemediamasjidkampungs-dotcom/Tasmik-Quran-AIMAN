@@ -1,13 +1,12 @@
 /**
- * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V7.0)
+ * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V7.5)
  * ---------------------------------------------------
  * Integrasi: GitHub Pages + Google Apps Script (Backend)
- * Security: SEMUA TOKEN DIALIHKAN KE GAS (SERVER-SIDE)
+ * Update: Auto-Jantina, Single-Pentashih, Optimized Wheel Picker
  */
 
 // 1. KONFIGURASI GLOBAL
 const CONFIG = {
-    // Pastikan URL GAS ini adalah yang terkini selepas New Deployment
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
     FILES: {
         LELAKI: "./peserta_lelaki.hjson",
@@ -18,7 +17,7 @@ const CONFIG = {
 
 // 2. STATE MANAGEMENT
 let state = {
-    currentUstaz: localStorage.getItem('ustaz_nama') || "USTAZ AIMAN",
+    currentUstaz: "USTAZ AIMAN", // Tetap kepada Ustaz Aiman
     dataPesertaLelaki: [],
     dataPesertaPerempuan: [],
     dataSilibus: {},
@@ -41,7 +40,11 @@ let state = {
 // 3. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("🚀 System Initializing...");
-    updateUstazUI();
+    
+    // Set default jantina dari hidden input jika ada
+    const jHidden = document.getElementById('jantina');
+    if(jHidden) state.selected.jantina = jHidden.value;
+
     await loadInitialData();
     setupEventListeners();
     renderTahapPicker();
@@ -63,7 +66,7 @@ async function loadInitialData() {
         state.dataSilibus = Hjson.parse(await resS.text());
 
         renderPesertaPicker();
-        console.log("✅ Data HJSON Loaded");
+        console.log("✅ Data HJSON Loaded Successfully");
     } catch (err) {
         console.error("❌ Load Error:", err.message);
     }
@@ -71,10 +74,7 @@ async function loadInitialData() {
 
 // 5. UI RENDERING
 function renderPesertaPicker() {
-    const jSelect = document.getElementById('jantina');
-    const jantina = jSelect ? jSelect.value : "LELAKI";
-    state.selected.jantina = jantina; // Simpan jantina dalam state
-    
+    const jantina = state.selected.jantina;
     const senarai = jantina === "LELAKI" ? state.dataPesertaLelaki : state.dataPesertaPerempuan;
     const wrapper = document.getElementById('peserta-wrapper');
     if(!wrapper) return;
@@ -102,7 +102,6 @@ function renderTahapPicker() {
             state.selected.tahap = t;
             highlightSelected('tahap-wrapper', index);
             
-            // Logik Mode Selector (Khusus Tahap 7)
             const modeContainer = document.getElementById('mode-selector-container');
             if (t === "7" && modeContainer) {
                 modeContainer.classList.remove('d-none');
@@ -127,7 +126,10 @@ function setMode(manual) {
     if (manual) {
         if(btnManual) btnManual.classList.add('active');
         if(btnAuto) btnAuto.classList.remove('active');
-        if(mukaInput) mukaInput.classList.add('manual-active');
+        if(mukaInput) {
+            mukaInput.classList.add('manual-active');
+            mukaInput.focus();
+        }
     } else {
         if(btnAuto) btnAuto.classList.add('active');
         if(btnManual) btnManual.classList.remove('active');
@@ -168,7 +170,7 @@ function renderRatingPickers() {
                 highlightSelected(`${type}-wrapper`, i-1);
             });
             wrapper.appendChild(item);
-            if(i === 5) item.click();
+            if(i === 3) item.click(); // Default skor 3
         }
     });
 }
@@ -177,7 +179,10 @@ function createWheelItem(content, onClick) {
     const div = document.createElement('div');
     div.className = 'wheel-item';
     div.innerHTML = content;
-    div.onclick = () => { onClick(); div.scrollIntoView({ behavior: 'smooth', inline: 'center' }); };
+    div.onclick = (e) => { 
+        onClick(); 
+        div.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); 
+    };
     return div;
 }
 
@@ -192,11 +197,14 @@ function highlightSelected(wrapperId, index) {
 // 6. AUDIO ENGINE
 async function toggleRecording() {
     const btn = document.getElementById('recordBtn');
+    const status = document.getElementById('recordStatus');
+    
     if (!state.isRecording) {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             state.mediaRecorder = new MediaRecorder(stream);
             state.audioChunks = [];
+            
             state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
             state.mediaRecorder.onstop = () => {
                 state.audioBlob = new Blob(state.audioChunks, { type: 'audio/ogg; codecs=opus' });
@@ -205,14 +213,19 @@ async function toggleRecording() {
                 const container = document.getElementById('audio-container');
                 if(container) container.classList.remove('d-none');
             };
+            
             state.mediaRecorder.start();
             state.isRecording = true;
-            btn.classList.add('recording');
-        } catch (err) { alert("Mikrofon ralat!"); }
+            btn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+            btn.style.background = "#000"; // Warna hitam bila sedang rakam
+            if(status) status.textContent = "Sedang Merakam...";
+        } catch (err) { alert("Sila benarkan akses mikrofon!"); }
     } else {
         state.mediaRecorder.stop();
         state.isRecording = false;
-        btn.classList.remove('recording');
+        btn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+        btn.style.background = "#ff4757";
+        if(status) status.textContent = "Rakaman Selesai.";
     }
 }
 
@@ -221,6 +234,12 @@ async function hantarTasmik() {
     const btn = document.getElementById('submitBtn');
     const overlay = document.getElementById('statusOverlay');
     
+    // Basic Validation
+    const msValue = document.getElementById('muka')?.value;
+    if(!state.selected.peserta || !msValue) {
+        return alert("Sila pilih Nama Peserta dan masukkan Muka Surat!");
+    }
+
     let audioBase64 = null;
     if (state.audioBlob) {
         audioBase64 = await new Promise(r => {
@@ -233,18 +252,16 @@ async function hantarTasmik() {
     const payload = {
         ustaz: state.currentUstaz,
         peserta: state.selected.peserta,
-        jantina: state.selected.jantina, // Data penting untuk pemilihan Bot di GAS
+        jantina: state.selected.jantina,
         tahap: "Tahap " + state.selected.tahap,
         surah: state.selected.surah,
-        mukasurat: document.getElementById('muka')?.value || "",
+        mukasurat: msValue,
         ayat_range: document.getElementById('ayat_range')?.value || "",
         tajwid: state.selected.tajwid,
         fasohah: state.selected.fasohah,
         ulasan: document.getElementById('catatan')?.value || "-",
         audioData: audioBase64
     };
-
-    if(!payload.peserta || !payload.mukasurat) return alert("Lengkapkan maklumat!");
 
     btn.disabled = true;
     if(overlay) overlay.classList.remove('d-none');
@@ -255,33 +272,22 @@ async function hantarTasmik() {
             mode: 'no-cors',
             body: JSON.stringify(payload)
         });
-        alert("✅ Rekod & Audio berjaya dihantar!");
-        location.reload();
+        
+        // Timeout sikit untuk pastikan no-cors request sampai
+        setTimeout(() => {
+            alert("✅ Rekod " + payload.peserta + " berjaya dihantar!");
+            location.reload();
+        }, 1500);
+
     } catch (e) {
-        alert("Ralat sistem!");
+        alert("Ralat Sistem! Sila cuba lagi.");
         btn.disabled = false;
-        if(overlay) overlay.classList.add('add-none');
+        if(overlay) overlay.classList.add('d-none');
     }
 }
 
-// 8. UTILS
-function updateUstazUI() {
-    const display = document.getElementById('ustazNameDisplay');
-    if(display) display.textContent = state.currentUstaz;
-    const floatSmall = document.querySelector('.pentashih-float small');
-    if(floatSmall) floatSmall.innerHTML = `PENTASHIH<br>${state.currentUstaz.replace("USTAZ ", "")}`;
-}
-
-function toggleUstaz() {
-    state.currentUstaz = state.currentUstaz.includes("AIMAN") ? "USTAZ NUAIM" : "USTAZ AIMAN";
-    localStorage.setItem('ustaz_nama', state.currentUstaz);
-    updateUstazUI();
-}
-
+// 8. SETUP
 function setupEventListeners() {
-    const jSelect = document.getElementById('jantina');
-    if(jSelect) jSelect.addEventListener('change', renderPesertaPicker);
-    
     const btnAuto = document.getElementById('btn-mode-auto');
     const btnManual = document.getElementById('btn-mode-manual');
     if(btnAuto) btnAuto.onclick = () => setMode(false);
