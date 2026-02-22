@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TASMIK DIGITAL - AIMAN</title>
+    <title>TASMIK DIGITAL - USTAZ AIMAN</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hjson/3.2.2/hjson.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,31 +15,26 @@
         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwY8E5K6m95LhshD_B096-7Y-Yh_2-0vIuKk-r_i-W9L_92x3Fp0iY6Wv8u6o5Q/s1600/logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3075/3075908.png'">
     </div>
 
-    <input type="hidden" id="jantina" value="LELAKI">
-    <input type="hidden" id="ayat_mula" value="1">
-    <input type="hidden" id="ayat_akhir" value="1">
-    <input type="hidden" id="jenis_bacaan" value="Tasmik Baru">
-
     <div class="main-card">
         <div class="scroll-content">
             
             <div class="section-group">
-                <label class="form-label"><i class="fa-solid fa-user-graduate"></i> PILIH PESERTA</label>
+                <label class="form-label"><i class="fa-solid fa-user-graduate"></i> NAMA PELAJAR</label>
                 <div id="peserta-wrapper" class="wheel-picker">
-                    <div style="padding:10px; color:#999;">Memuatkan nama pelajar...</div>
+                    <div style="padding:10px; color:#999; font-size: 0.8rem;">Sila tunggu, memuatkan data...</div>
                 </div>
             </div>
 
             <div class="section-group">
-                <label class="form-label"><i class="fa-solid fa-layer-group"></i> TAHAP SILIBUS</label>
+                <label class="form-label"><i class="fa-solid fa-layer-group"></i> TAHAP TASMIK</label>
                 <div id="tahap-wrapper" class="wheel-picker"></div>
             </div>
 
             <div id="mode-selector-container" class="section-group d-none">
-                <label class="form-label"><i class="fa-solid fa-toggle-on"></i> MODE MURAJA'AH</label>
+                <label class="form-label"><i class="fa-solid fa-toggle-on"></i> MODE PEMILIHAN</label>
                 <div class="mode-btn-group">
-                    <button class="mode-btn active" id="btn-mode-auto">AUTO (SILIBUS)</button>
-                    <button class="mode-btn" id="btn-mode-manual">MANUAL (BEBAS)</button>
+                    <button class="mode-btn active" id="btn-mode-auto">IKUT SILIBUS</button>
+                    <button class="mode-btn" id="btn-mode-manual">BEBAS / MURAJAAH</button>
                 </div>
             </div>
 
@@ -51,7 +46,7 @@
             <div class="row-ayat">
                 <div class="section-group">
                     <label class="form-label">MUKA SURAT</label>
-                    <input type="number" id="muka" class="modern-input" placeholder="M/S">
+                    <input type="number" id="muka" class="modern-input" placeholder="000">
                 </div>
                 <div class="section-group">
                     <label class="form-label">AYAT / RANGE</label>
@@ -76,12 +71,12 @@
             </div>
 
             <div class="section-group" style="margin-top: 20px;">
-                <label class="form-label">CATATAN & ULASAN</label>
-                <textarea id="catatan" class="modern-input" rows="3" placeholder="Tulis ulasan bacaan pelajar di sini..."></textarea>
+                <label class="form-label"><i class="fa-solid fa-comment-dots"></i> ULASAN GURU</label>
+                <textarea id="catatan" class="modern-input" rows="3" placeholder="Contoh: Bacaan lancar, perbaiki makhraj huruf Ra..."></textarea>
             </div>
 
             <div id="audio-container" class="section-group d-none">
-                <label class="form-label">PREVIEW RAKAMAN</label>
+                <label class="form-label">DENGAR RAKAMAN</label>
                 <audio id="audioPlayback" controls style="width: 100%;"></audio>
                 <p id="recordStatus" style="font-size: 0.7rem; color: #ff4757; text-align: center; margin-top: 5px;"></p>
             </div>
