@@ -58,26 +58,26 @@
 
   # TAHAP 6: Surah Pilihan & Hafalan Utama
   "6": [
+    { nama: "Al-Kahfi", ayat: 110, ms: 293 }
     { nama: "As-Sajadah", ayat: 30, ms: 415 }
-    { nama: "Al-Mulk", ayat: 30, ms: 562 }
-    { nama: "Al-Insaan", ayat: 31, ms: 578 }
-    { nama: "Ar-Rahmaan", ayat: 78, ms: 531 }
-    { nama: "Al-Waqi'ah", ayat: 96, ms: 534 }
     { nama: "Yaasin", ayat: 83, ms: 440 }
     { nama: "Ad-Dukhaan", ayat: 59, ms: 496 }
-    { nama: "Al-Hasyr", ayat: 24, ms: 545 }
+    { nama: "Ar-Rahmaan", ayat: 78, ms: 531 }
+    { nama: "Al-Waqi'ah", ayat: 96, ms: 534 }
+    { nama: "Al-Mulk", ayat: 30, ms: 562 }
+    { nama: "Al-Insaan", ayat: 31, ms: 578 }
     { nama: "Al-Jumu'ah", ayat: 11, ms: 553 }
-    { nama: "Al-Kahfi", ayat: 110, ms: 293 }
+    { nama: "Al-Hasyr", ayat: 24, ms: 545 }
   ]
 
-  # TAHAP 7: Zon Muraja'ah (Sistem Kelompok)
+  # TAHAP 7: Zon Muraja'ah (Dinamik)
   "7": [
-    { nama: "MURAJA'AH", ayat: "Silibus Tahap 1", ms: 601 }
-    { nama: "MURAJA'AH", ayat: "Silibus Tahap 2", ms: 596 }
-    { nama: "MURAJA'AH", ayat: "Silibus Tahap 3", ms: 587 }
-    { nama: "MURAJA'AH", ayat: "Silibus Tahap 4", ms: 585 }
-    { nama: "MURAJA'AH", ayat: "Silibus Tahap 5", ms: 582 }
-    { nama: "MURAJA'AH", ayat: "Silibus Tahap 6", ms: 293 }
-    { nama: "MURAJA'AH MANUAL", ayat: "Bebas", ms: 0 }
+    { nama: "MURAJA'AH T1", ayat: "Silibus T1", ms: 601 }
+    { nama: "MURAJA'AH T2", ayat: "Silibus T2", ms: 596 }
+    { nama: "MURAJA'AH T3", ayat: "Silibus T3", ms: 587 }
+    { nama: "MURAJA'AH T4", ayat: "Silibus T4", ms: 585 }
+    { nama: "MURAJA'AH T5", ayat: "Silibus T5", ms: 582 }
+    { nama: "MURAJA'AH T6", ayat: "Silibus T6", ms: 293 }
+    { nama: "MANUAL BEBAS", ayat: "Semua", ms: 1 }
   ]
 }
