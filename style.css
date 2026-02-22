@@ -1,6 +1,6 @@
 /* TASMIK QURAN 2026 - ULTIMATE PROFESSIONAL STYLESHEET 
    Theme: Deep Sea Blue Glassmorphism (Special Edition for IMAM AIMAN)
-   Version: 7.8 (Stacked Scoring & UI Clean-up)
+   Version: 8.2 (Stacked Scoring & UI Clean-up)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
@@ -60,7 +60,7 @@ html, body {
     background: white;
     position: relative;
     z-index: 10;
-    /* Margin atas dikecilkan kerana butang jantina sudah tiada */
+    /* Margin diselaraskan untuk paparan tanpa butang jantina */
     margin: 75px 15px 20px 15px !important; 
     height: calc(100vh - 180px); 
     border-radius: 25px;
@@ -120,7 +120,7 @@ html, body {
     outline: none;
 }
 
-/* 5. WHEEL PICKER & RATING STYLES (STACKED) */
+/* 5. WHEEL PICKER & RATING STYLES */
 .wheel-picker {
     background: #f1f6f8;
     border: 2px solid #e1e9ed;
@@ -130,7 +130,10 @@ html, body {
     display: flex;
     gap: 8px;
     scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
+.wheel-picker::-webkit-scrollbar { display: none; }
 
 .wheel-item {
     flex: 0 0 auto;
@@ -141,12 +144,15 @@ html, body {
     font-weight: 700;
     color: #94a3b8;
     border: 1px solid #e1e9ed;
+    transition: var(--transition);
+    cursor: pointer;
 }
 
 .wheel-item.selected {
     background: var(--primary-blue);
     color: white;
     border-color: var(--primary-blue);
+    transform: scale(1.02);
 }
 
 /* Kotak Khas untuk Skor (Tajwid & Fasohah Atas-Bawah) */
@@ -158,7 +164,7 @@ html, body {
 }
 
 .grading-item {
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 .divider-thin {
@@ -227,11 +233,38 @@ html, body {
 
 .d-none { display: none !important; }
 
-/* 9. CLEAN UP */
-.pentashih-float, .header-bg-decoration, .bg-icon {
-    display: none !important;
+/* 9. UTILITY & MODE SELECTOR */
+.mode-btn-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
-body::before, body::after {
-    display: none !important;
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 2px solid #e1e9ed;
+    background: white;
+    font-weight: 800;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    transition: var(--transition);
+}
+
+.mode-btn.active {
+    border-color: var(--primary-blue);
+    background: var(--primary-blue);
+    color: white;
+}
+
+.manual-active {
+    border-color: var(--manual-color) !important;
+    color: var(--manual-color);
+}
+
+.divider {
+    height: 1px;
+    background: #e1e9ed;
+    margin: 20px 0;
 }
