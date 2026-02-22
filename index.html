@@ -21,7 +21,7 @@
             <div class="section-group">
                 <label class="form-label"><i class="fa-solid fa-user-graduate"></i> NAMA PELAJAR</label>
                 <div id="peserta-wrapper" class="wheel-picker">
-                    <div style="padding:10px; color:#999; font-size: 0.8rem;">Sila tunggu, memuatkan data...</div>
+                    <div style="padding:10px; color:#999; font-size: 0.8rem;">Memuatkan data pelajar...</div>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@
 
             <div class="section-group" style="margin-top: 20px;">
                 <label class="form-label"><i class="fa-solid fa-comment-dots"></i> ULASAN GURU</label>
-                <textarea id="catatan" class="modern-input" rows="3" placeholder="Contoh: Bacaan lancar, perbaiki makhraj huruf Ra..."></textarea>
+                <textarea id="catatan" class="modern-input" rows="3" placeholder="Tulis ulasan bacaan pelajar di sini..."></textarea>
             </div>
 
             <div id="audio-container" class="section-group d-none">
@@ -100,7 +100,11 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const script = document.createElement('script');
+        script.src = 'script.js?v=' + new Date().getTime();
+        document.body.appendChild(script);
+    </script>
 
 </body>
 </html>
