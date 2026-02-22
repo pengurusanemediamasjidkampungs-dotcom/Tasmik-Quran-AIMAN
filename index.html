@@ -15,29 +15,19 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Akebono_School_Logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3075/3075908.png'">
     </div>
 
-    <div class="pentashih-float" onclick="toggleUstaz()">
-        <small id="ustazFloatDisplay">PENTASHIH<br>AIMAN</small>
-    </div>
+    <input type="hidden" id="jantina" value="LELAKI">
 
     <div class="main-card">
         <div class="scroll-content">
             
             <div class="section-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <label class="form-label"><i class="fa-solid fa-user-graduate"></i> PILIH PESERTA</label>
-                    <select id="jantina" class="modern-input" style="width: auto; padding: 4px 10px; height: 30px; font-size: 10px;">
-                        <option value="LELAKI">♂️ LELAKI</option>
-                        <option value="PEREMPUAN">♀️ PEREMPUAN</option>
-                    </select>
-                </div>
-                <div id="peserta-wrapper" class="wheel-picker">
-                    </div>
+                <label class="form-label"><i class="fa-solid fa-user-graduate"></i> PILIH PESERTA</label>
+                <div id="peserta-wrapper" class="wheel-picker"></div>
             </div>
 
             <div class="section-group">
                 <label class="form-label"><i class="fa-solid fa-layer-group"></i> TAHAP SILIBUS</label>
-                <div id="tahap-wrapper" class="wheel-picker">
-                    </div>
+                <div id="tahap-wrapper" class="wheel-picker"></div>
             </div>
 
             <div id="mode-selector-container" class="section-group d-none">
@@ -50,8 +40,7 @@
 
             <div class="section-group">
                 <label class="form-label"><i class="fa-solid fa-book-open"></i> SURAH / KELOMPOK</label>
-                <div id="surah-wrapper" class="wheel-picker">
-                    </div>
+                <div id="surah-wrapper" class="wheel-picker"></div>
             </div>
 
             <div class="row-ayat">
@@ -71,20 +60,23 @@
 
             <div class="divider"></div>
 
-            <div class="row-ayat">
-                <div class="section-group">
-                    <label class="form-label">SKOR TAJWID</label>
+            <div class="section-group grading-box">
+                <div class="grading-item">
+                    <label class="form-label"><i class="fa-solid fa-star"></i> SKOR TAJWID</label>
                     <div id="tajwid-wrapper" class="wheel-picker rating-picker"></div>
                 </div>
-                <div class="section-group">
-                    <label class="form-label">SKOR FASOHAH</label>
+                
+                <div class="divider-thin"></div>
+
+                <div class="grading-item">
+                    <label class="form-label"><i class="fa-solid fa-wand-magic-sparkles"></i> SKOR FASOHAH</label>
                     <div id="fasohah-wrapper" class="wheel-picker rating-picker"></div>
                 </div>
             </div>
 
             <div class="section-group">
                 <label class="form-label">CATATAN & ULASAN</label>
-                <textarea id="catatan" class="modern-input" rows="2" placeholder="Tulis ulasan bacaan pelajar..."></textarea>
+                <textarea id="catatan" class="modern-input" rows="3" placeholder="Tulis ulasan bacaan pelajar..."></textarea>
             </div>
 
             <div id="audio-container" class="section-group d-none">
@@ -108,7 +100,7 @@
     <div id="statusOverlay" class="d-none">
         <div style="text-align: center; color: white;">
             <i class="fa-solid fa-spinner fa-spin fa-3x"></i>
-            <p style="margin-top: 15px; font-weight: 800;">MENGHANTAR REKOD...</p>
+            <p style="margin-top: 15px; font-weight: 800; letter-spacing: 1px;">MENGHANTAR REKOD...</p>
         </div>
     </div>
 
