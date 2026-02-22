@@ -1,6 +1,6 @@
 /* TASMIK QURAN 2026 - ULTIMATE PROFESSIONAL STYLESHEET 
    Theme: Deep Sea Blue Glassmorphism (Special Edition for IMAM AIMAN)
-   Version: 7.1 (Support Tahap 7 & Decoration Fix)
+   Version: 7.2 (Fix Logo Overflow & Decoration)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
@@ -31,7 +31,7 @@ html, body {
     overflow: hidden; 
 }
 
-/* 2. TOP NAVIGATION */
+/* 2. TOP NAVIGATION - FIXED LOGO OVERFLOW */
 .btn-home-float {
     position: fixed !important;
     top: 15px !important;
@@ -46,6 +46,13 @@ html, body {
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden; /* Menghalang logo melimpah */
+}
+
+.btn-home-float img {
+    width: 85%;      /* Logo tidak rapat ke tepi */
+    height: 85%;
+    object-fit: contain;
 }
 
 .pentashih-float {
@@ -249,13 +256,23 @@ html, body {
 .btn-record { left: 25px !important; background: #ff4757 !important; }
 .fab-send { right: 25px !important; background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%) !important; }
 
-/* 9. UTILS */
+/* 9. UTILS & OVERLAY */
 .d-none { display: none !important; }
 
 .divider {
     height: 2px;
     background: #e1e9ed;
     margin: 15px 0;
+}
+
+#statusOverlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 77, 104, 0.95);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #recordStatus {
@@ -266,28 +283,13 @@ html, body {
     color: #ff4757;
 }
 
-/* 10. DECORATION FIX (MENGATASI IKON MELETUP) */
-/* Kod ini akan memastikan imej dekorasi kekal di latar belakang 
-   dan tidak menutup borang pada skrin telefon */
-
+/* 10. DECORATION & CLEANUP FIX */
+/* Memastikan sebarang elemen luar tidak menutup skrin utama */
 .header-bg-decoration, .bg-icon, .decoration-img {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    max-height: 200px; /* Hadkan ketinggian ikon */
-    object-fit: contain;
-    z-index: 1; /* Di belakang borang */
-    opacity: 0.2; /* Jadikan sedikit pudar supaya nampak eksklusif */
-    pointer-events: none;
+    display: none !important; /* Tutup terus jika tidak perlu */
 }
 
-@media (max-width: 600px) {
-    /* Jika masih besar di telefon, kita hadkan lagi saiznya */
-    .header-bg-decoration, .bg-icon {
-        max-width: 150px; 
-        top: -20px;
-        left: -20px;
-    }
+/* Membersihkan background daripada elemen mengganggu */
+body::before, body::after {
+    display: none !important;
 }
