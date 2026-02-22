@@ -2,14 +2,14 @@
  * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V8.2)
  * ---------------------------------------------------
  * Khusus: REPO USTAZ AIMAN
- * Fix: Pathing issue & Jantina Fallback
+ * Update: Fix Path & UI alignment
  */
 
 // 1. KONFIGURASI GLOBAL
 const CONFIG = {
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
     FILES: {
-        // Dibuang ./ untuk kestabilan akses di GitHub Pages
+        // Buang "./" supaya GitHub Pages lebih mudah cari fail
         PESERTA: "peserta_kumpulan_aiman.hjson", 
         SILIBUS: "silibus.hjson"
     }
@@ -18,12 +18,12 @@ const CONFIG = {
 // 2. STATE MANAGEMENT
 let state = {
     currentUstaz: "USTAZ AIMAN",
-    dataPeserta: [],
+    dataPeserta: [], 
     dataSilibus: {},
     isManualMode: false,
     selected: {
         peserta: "",
-        jantina: "PEREMPUAN", // Default memandangkan senarai Aiman adalah perempuan
+        jantina: "PEREMPUAN", // Default Perempuan untuk kumpulan Aiman
         tahap: "1",
         surah: "",
         muka: "",
@@ -38,7 +38,6 @@ let state = {
 
 // 3. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("🚀 System Aiman Initializing...");
     setupEventListeners();
     await loadInitialData();
     renderTahapPicker();
@@ -54,8 +53,7 @@ async function loadInitialData() {
             fetch(`${CONFIG.FILES.SILIBUS}?v=${ts}`)
         ]);
 
-        if(!resP.ok) throw new Error("Gagal akses fail peserta_kumpulan_aiman.hjson");
-        if(!resS.ok) throw new Error("Gagal akses fail silibus.hjson");
+        if(!resP.ok || !resS.ok) throw new Error("Fail pangkalan data tidak dapat diakses.");
 
         const textP = await resP.text();
         const textS = await resS.text();
@@ -63,14 +61,11 @@ async function loadInitialData() {
         state.dataPeserta = Hjson.parse(textP);
         state.dataSilibus = Hjson.parse(textS);
 
-        console.log("✅ Data Berjaya Dimuatkan");
         renderPesertaPicker();
 
     } catch (err) {
         console.error("❌ Ralat:", err.message);
-        // Paparkan ralat pada skrin untuk memudahkan debug
-        const wrapper = document.getElementById('peserta-wrapper');
-        if(wrapper) wrapper.innerHTML = `<div style="color:red; padding:10px;">Ralat: ${err.message}</div>`;
+        alert("Ralat: Fail " + CONFIG.FILES.PESERTA + " tidak ditemui di pelayan.");
     }
 }
 
@@ -83,7 +78,6 @@ function renderPesertaPicker() {
     state.dataPeserta.forEach((p, index) => {
         const item = createWheelItem(p.nama, () => {
             state.selected.peserta = p.nama;
-            // Ambil jantina dari fail, jika tiada guna default
             state.selected.jantina = p.jantina || "PEREMPUAN"; 
             highlightSelected('peserta-wrapper', index);
         });
@@ -102,16 +96,7 @@ function renderTahapPicker() {
         const item = createWheelItem(`TAHAP ${t}`, () => {
             state.selected.tahap = t;
             highlightSelected('tahap-wrapper', index);
-            
-            const modeContainer = document.getElementById('mode-selector-container');
-            if (t === "7" && modeContainer) {
-                modeContainer.classList.remove('d-none');
-                setMode(false); 
-            } else {
-                if(modeContainer) modeContainer.classList.add('d-none');
-                setMode(false);
-                renderSurahPicker(t);
-            }
+            renderSurahPicker(t);
         });
         wrapper.appendChild(item);
         if(index === 0) item.click();
@@ -126,10 +111,8 @@ function renderSurahPicker(tahap) {
     state.dataSilibus[tahap].forEach((s, index) => {
         const item = createWheelItem(`${s.nama} <small>(m/s ${s.ms})</small>`, () => {
             state.selected.surah = s.nama;
-            const mukaEl = document.getElementById('muka');
-            const ayatEl = document.getElementById('ayat_range');
-            if(mukaEl) mukaEl.value = s.ms;
-            if(ayatEl) ayatEl.value = `1-${s.ayat || '?'}`;
+            document.getElementById('muka').value = s.ms;
+            document.getElementById('ayat_range').value = `1-${s.ayat || '?'}`;
             highlightSelected('surah-wrapper', index);
         });
         wrapper.appendChild(item);
@@ -171,28 +154,8 @@ function highlightSelected(wrapperId, index) {
     if(el.children[index]) el.children[index].classList.add('selected');
 }
 
-function setMode(manual) {
-    state.isManualMode = manual;
-    const btnAuto = document.getElementById('btn-mode-auto');
-    const btnManual = document.getElementById('btn-mode-manual');
-    const mukaInput = document.getElementById('muka');
-
-    if (manual) {
-        btnManual?.classList.add('active');
-        btnAuto?.classList.remove('active');
-        mukaInput?.classList.add('manual-active');
-    } else {
-        btnAuto?.classList.add('active');
-        btnManual?.classList.remove('active');
-        mukaInput?.classList.remove('manual-active');
-        renderSurahPicker(state.selected.tahap);
-    }
-}
-
-// 6. AUDIO ENGINE
 async function toggleRecording() {
     const btn = document.getElementById('recordBtn');
-    const status = document.getElementById('recordStatus');
     if (!state.isRecording) {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -201,37 +164,33 @@ async function toggleRecording() {
             state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
             state.mediaRecorder.onstop = () => {
                 state.audioBlob = new Blob(state.audioChunks, { type: 'audio/ogg; codecs=opus' });
-                const playback = document.getElementById('audioPlayback');
-                if(playback) playback.src = URL.createObjectURL(state.audioBlob);
-                document.getElementById('audio-container')?.classList.remove('d-none');
+                document.getElementById('audioPlayback').src = URL.createObjectURL(state.audioBlob);
+                document.getElementById('audio-container').classList.remove('d-none');
             };
             state.mediaRecorder.start();
             state.isRecording = true;
-            btn.innerHTML = '<i class="fa-solid fa-stop"></i>';
             btn.style.background = "#000";
-            if(status) status.textContent = "Sedang Merakam...";
         } catch (err) { alert("Sila benarkan akses mikrofon!"); }
     } else {
         state.mediaRecorder.stop();
         state.isRecording = false;
-        btn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
         btn.style.background = "#ff4757";
-        if(status) status.textContent = "Rakaman Selesai.";
     }
 }
 
-// 7. SUBMISSION
 async function hantarTasmik() {
     const btn = document.getElementById('submitBtn');
-    const overlay = document.getElementById('statusOverlay');
-    const msValue = document.getElementById('muka')?.value;
+    const msValue = document.getElementById('muka').value;
 
-    if(!state.selected.peserta || !msValue) return alert("Pilih Peserta & Masukkan Muka Surat!");
+    if(!state.selected.peserta || !msValue) return alert("Pilih Peserta & Muka Surat!");
+
+    btn.disabled = true;
+    document.getElementById('statusOverlay').classList.remove('d-none');
 
     let audioBase64 = null;
     if (state.audioBlob) {
+        const reader = new FileReader();
         audioBase64 = await new Promise(r => {
-            const reader = new FileReader();
             reader.onloadend = () => r(reader.result.split(',')[1]);
             reader.readAsDataURL(state.audioBlob);
         });
@@ -244,27 +203,24 @@ async function hantarTasmik() {
         tahap: "Tahap " + state.selected.tahap,
         surah: state.selected.surah,
         mukasurat: msValue,
-        ayat_range: document.getElementById('ayat_range')?.value || "",
+        ayat_range: document.getElementById('ayat_range').value,
         tajwid: state.selected.tajwid,
         fasohah: state.selected.fasohah,
-        ulasan: document.getElementById('catatan')?.value || "-",
+        ulasan: document.getElementById('catatan').value || "-",
         audioData: audioBase64
     };
 
-    btn.disabled = true;
-    overlay?.classList.remove('d-none');
-
     try {
         await fetch(CONFIG.GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        setTimeout(() => { alert("✅ Rekod berjaya dihantar!"); location.reload(); }, 1500);
+        alert("✅ Rekod berjaya dihantar!");
+        location.reload();
     } catch (e) {
         alert("Ralat penghantaran!");
         btn.disabled = false;
-        overlay?.classList.add('d-none');
+        document.getElementById('statusOverlay').classList.add('d-none');
     }
 }
 
 function setupEventListeners() {
-    document.getElementById('btn-mode-auto').onclick = () => setMode(false);
-    document.getElementById('btn-mode-manual').onclick = () => setMode(true);
+    // Kosong buat masa ini jika tiada butang mod manual
 }
