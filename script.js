@@ -7,9 +7,10 @@
 
 // 1. KONFIGURASI GLOBAL
 const CONFIG = {
+    // Pastikan URL GAS ini betul
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
     FILES: {
-        // Buang "./" supaya GitHub Pages lebih mudah cari fail
+        // BUANG ./ di depan nama fail
         PESERTA: "peserta_kumpulan_aiman.hjson", 
         SILIBUS: "silibus.hjson"
     }
