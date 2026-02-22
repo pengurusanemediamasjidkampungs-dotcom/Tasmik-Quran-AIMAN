@@ -2,12 +2,12 @@
  * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V7.0)
  * ---------------------------------------------------
  * Integrasi: GitHub Pages + Google Apps Script (Backend)
- * Security: Telegram Token moved to GAS (Server-Side)
- * Updates: Tahap 7 Support & Audio Base64 Forwarding
+ * Security: SEMUA TOKEN DIALIHKAN KE GAS (SERVER-SIDE)
  */
 
 // 1. KONFIGURASI GLOBAL
 const CONFIG = {
+    // Pastikan URL GAS ini adalah yang terkini selepas New Deployment
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
     FILES: {
         LELAKI: "./peserta_lelaki.hjson",
@@ -40,7 +40,7 @@ let state = {
 
 // 3. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log("🚀 AIMAN PRO System Initializing...");
+    console.log("🚀 System Initializing...");
     updateUstazUI();
     await loadInitialData();
     setupEventListeners();
@@ -71,7 +71,10 @@ async function loadInitialData() {
 
 // 5. UI RENDERING
 function renderPesertaPicker() {
-    const jantina = document.getElementById('jantina')?.value || "LELAKI";
+    const jSelect = document.getElementById('jantina');
+    const jantina = jSelect ? jSelect.value : "LELAKI";
+    state.selected.jantina = jantina; // Simpan jantina dalam state
+    
     const senarai = jantina === "LELAKI" ? state.dataPesertaLelaki : state.dataPesertaPerempuan;
     const wrapper = document.getElementById('peserta-wrapper');
     if(!wrapper) return;
@@ -99,12 +102,12 @@ function renderTahapPicker() {
             state.selected.tahap = t;
             highlightSelected('tahap-wrapper', index);
             
-            // Logik Tahap 7 (Muraja'ah)
+            // Logik Mode Selector (Khusus Tahap 7)
             const modeContainer = document.getElementById('mode-selector-container');
-            if (t === "7") {
+            if (t === "7" && modeContainer) {
                 modeContainer.classList.remove('d-none');
-                setMode(false); // Default Auto
-            } else {
+                setMode(false); 
+            } else if (modeContainer) {
                 modeContainer.classList.add('d-none');
                 setMode(false);
                 renderSurahPicker(t);
@@ -119,18 +122,16 @@ function setMode(manual) {
     state.isManualMode = manual;
     const btnAuto = document.getElementById('btn-mode-auto');
     const btnManual = document.getElementById('btn-mode-manual');
-    const surahInput = document.getElementById('surah-wrapper');
     const mukaInput = document.getElementById('muka');
 
     if (manual) {
-        btnManual.classList.add('active');
-        btnAuto.classList.remove('active');
-        mukaInput.classList.add('manual-active');
-        // Tukar Surah Picker kepada "Input Manual" jika perlu atau biarkan
+        if(btnManual) btnManual.classList.add('active');
+        if(btnAuto) btnAuto.classList.remove('active');
+        if(mukaInput) mukaInput.classList.add('manual-active');
     } else {
-        btnAuto.classList.add('active');
-        btnManual.classList.remove('active');
-        mukaInput.classList.remove('manual-active');
+        if(btnAuto) btnAuto.classList.add('active');
+        if(btnManual) btnManual.classList.remove('active');
+        if(mukaInput) mukaInput.classList.remove('manual-active');
         renderSurahPicker(state.selected.tahap);
     }
 }
@@ -145,8 +146,10 @@ function renderSurahPicker(tahap) {
     senaraiSurah.forEach((s, index) => {
         const item = createWheelItem(`${s.nama} <small>(m/s ${s.ms})</small>`, () => {
             state.selected.surah = s.nama;
-            document.getElementById('muka').value = s.ms;
-            document.getElementById('ayat_range').value = `1-${s.ayat || '?'}`;
+            const mukaEl = document.getElementById('muka');
+            const ayatEl = document.getElementById('ayat_range');
+            if(mukaEl) mukaEl.value = s.ms;
+            if(ayatEl) ayatEl.value = `1-${s.ayat || '?'}`;
             highlightSelected('surah-wrapper', index);
         });
         wrapper.appendChild(item);
@@ -165,7 +168,7 @@ function renderRatingPickers() {
                 highlightSelected(`${type}-wrapper`, i-1);
             });
             wrapper.appendChild(item);
-            if(i === 5) item.click(); // Default 5 star
+            if(i === 5) item.click();
         }
     });
 }
@@ -179,7 +182,9 @@ function createWheelItem(content, onClick) {
 }
 
 function highlightSelected(wrapperId, index) {
-    const items = document.getElementById(wrapperId).children;
+    const el = document.getElementById(wrapperId);
+    if(!el) return;
+    const items = el.children;
     Array.from(items).forEach(item => item.classList.remove('selected'));
     if(items[index]) items[index].classList.add('selected');
 }
@@ -195,8 +200,10 @@ async function toggleRecording() {
             state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
             state.mediaRecorder.onstop = () => {
                 state.audioBlob = new Blob(state.audioChunks, { type: 'audio/ogg; codecs=opus' });
-                document.getElementById('audioPlayback').src = URL.createObjectURL(state.audioBlob);
-                document.getElementById('audio-container').classList.remove('d-none');
+                const playback = document.getElementById('audioPlayback');
+                if(playback) playback.src = URL.createObjectURL(state.audioBlob);
+                const container = document.getElementById('audio-container');
+                if(container) container.classList.remove('d-none');
             };
             state.mediaRecorder.start();
             state.isRecording = true;
@@ -226,20 +233,21 @@ async function hantarTasmik() {
     const payload = {
         ustaz: state.currentUstaz,
         peserta: state.selected.peserta,
+        jantina: state.selected.jantina, // Data penting untuk pemilihan Bot di GAS
         tahap: "Tahap " + state.selected.tahap,
         surah: state.selected.surah,
-        mukasurat: document.getElementById('muka').value,
-        ayat_range: document.getElementById('ayat_range').value,
+        mukasurat: document.getElementById('muka')?.value || "",
+        ayat_range: document.getElementById('ayat_range')?.value || "",
         tajwid: state.selected.tajwid,
         fasohah: state.selected.fasohah,
-        ulasan: document.getElementById('catatan').value,
+        ulasan: document.getElementById('catatan')?.value || "-",
         audioData: audioBase64
     };
 
-    if(!payload.peserta || !payload.mukasurat) return alert("Lengkapkan borang!");
+    if(!payload.peserta || !payload.mukasurat) return alert("Lengkapkan maklumat!");
 
     btn.disabled = true;
-    overlay.classList.remove('d-none');
+    if(overlay) overlay.classList.remove('d-none');
 
     try {
         await fetch(CONFIG.GAS_URL, {
@@ -247,17 +255,19 @@ async function hantarTasmik() {
             mode: 'no-cors',
             body: JSON.stringify(payload)
         });
-        alert("✅ Rekod berjaya dihantar!");
+        alert("✅ Rekod & Audio berjaya dihantar!");
         location.reload();
     } catch (e) {
-        alert("Ralat!");
+        alert("Ralat sistem!");
         btn.disabled = false;
-        overlay.classList.add('d-none');
+        if(overlay) overlay.classList.add('add-none');
     }
 }
 
 // 8. UTILS
 function updateUstazUI() {
+    const display = document.getElementById('ustazNameDisplay');
+    if(display) display.textContent = state.currentUstaz;
     const floatSmall = document.querySelector('.pentashih-float small');
     if(floatSmall) floatSmall.innerHTML = `PENTASHIH<br>${state.currentUstaz.replace("USTAZ ", "")}`;
 }
@@ -269,7 +279,11 @@ function toggleUstaz() {
 }
 
 function setupEventListeners() {
-    document.getElementById('jantina').addEventListener('change', renderPesertaPicker);
-    document.getElementById('btn-mode-auto').onclick = () => setMode(false);
-    document.getElementById('btn-mode-manual').onclick = () => setMode(true);
+    const jSelect = document.getElementById('jantina');
+    if(jSelect) jSelect.addEventListener('change', renderPesertaPicker);
+    
+    const btnAuto = document.getElementById('btn-mode-auto');
+    const btnManual = document.getElementById('btn-mode-manual');
+    if(btnAuto) btnAuto.onclick = () => setMode(false);
+    if(btnManual) btnManual.onclick = () => setMode(true);
 }
