@@ -5,7 +5,9 @@
  * Update: Menyelaraskan cache untuk fail peserta tunggal
  */
 
-const CACHE_NAME = 'tasmik-aiman-v8.2';
+// Tukar v1 kepada v9.0-Final untuk paksa telefon buang cache lama
+const CACHE_NAME = 'tasmik-aiman-v9.0-final'; 
+
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
