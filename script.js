@@ -1,28 +1,29 @@
 /**
- * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V8.0)
+ * TASMIK QURAN DIGITAL 2026 - CORE ENGINE (ULTRA PRO V8.2)
  * ---------------------------------------------------
  * Khusus: REPO USTAZ AIMAN
- * Update: Dedicated Group File & Simplified Loading
+ * Fix: Pathing issue & Jantina Fallback
  */
 
-// 1. KONFIGURASI GLOBAL (Disesuaikan untuk Kumpulan Aiman)
+// 1. KONFIGURASI GLOBAL
 const CONFIG = {
     GAS_URL: "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec",
     FILES: {
-        PESERTA: "./peserta_kumpulan_aiman.hjson", // Nama fail baru Ustaz
-        SILIBUS: "./silibus.hjson"
+        // Dibuang ./ untuk kestabilan akses di GitHub Pages
+        PESERTA: "peserta_kumpulan_aiman.hjson", 
+        SILIBUS: "silibus.hjson"
     }
 };
 
 // 2. STATE MANAGEMENT
 let state = {
     currentUstaz: "USTAZ AIMAN",
-    dataPeserta: [], // Satu senarai sahaja untuk kumpulan ini
+    dataPeserta: [],
     dataSilibus: {},
     isManualMode: false,
     selected: {
         peserta: "",
-        jantina: "LELAKI", // Boleh kekal sebagai metadata atau baca dari fail
+        jantina: "PEREMPUAN", // Default memandangkan senarai Aiman adalah perempuan
         tahap: "1",
         surah: "",
         muka: "",
@@ -38,18 +39,13 @@ let state = {
 // 3. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("🚀 System Aiman Initializing...");
-    
-    // Sediakan UI Asas
     setupEventListeners();
-    
-    // Muat data kumpulan Aiman
     await loadInitialData();
-    
     renderTahapPicker();
     renderRatingPickers();
 });
 
-// 4. DATA LOADING (Simplified)
+// 4. DATA LOADING
 async function loadInitialData() {
     const ts = new Date().getTime(); 
     try {
@@ -58,17 +54,23 @@ async function loadInitialData() {
             fetch(`${CONFIG.FILES.SILIBUS}?v=${ts}`)
         ]);
 
-        if(!resP.ok || !resS.ok) throw new Error("Gagal akses fail pangkalan data Kumpulan Aiman.");
+        if(!resP.ok) throw new Error("Gagal akses fail peserta_kumpulan_aiman.hjson");
+        if(!resS.ok) throw new Error("Gagal akses fail silibus.hjson");
 
-        state.dataPeserta = Hjson.parse(await resP.text());
-        state.dataSilibus = Hjson.parse(await resS.text());
+        const textP = await resP.text();
+        const textS = await resS.text();
 
-        console.log("✅ Data Kumpulan Aiman Loaded");
+        state.dataPeserta = Hjson.parse(textP);
+        state.dataSilibus = Hjson.parse(textS);
+
+        console.log("✅ Data Berjaya Dimuatkan");
         renderPesertaPicker();
 
     } catch (err) {
         console.error("❌ Ralat:", err.message);
-        alert("Ralat: Fail peserta_kumpulan_aiman.hjson tidak ditemui.");
+        // Paparkan ralat pada skrin untuk memudahkan debug
+        const wrapper = document.getElementById('peserta-wrapper');
+        if(wrapper) wrapper.innerHTML = `<div style="color:red; padding:10px;">Ralat: ${err.message}</div>`;
     }
 }
 
@@ -81,8 +83,8 @@ function renderPesertaPicker() {
     state.dataPeserta.forEach((p, index) => {
         const item = createWheelItem(p.nama, () => {
             state.selected.peserta = p.nama;
-            // Jika dalam fail hjson ada info jantina, kita simpan
-            state.selected.jantina = p.jantina || "LELAKI"; 
+            // Ambil jantina dari fail, jika tiada guna default
+            state.selected.jantina = p.jantina || "PEREMPUAN"; 
             highlightSelected('peserta-wrapper', index);
         });
         wrapper.appendChild(item);
