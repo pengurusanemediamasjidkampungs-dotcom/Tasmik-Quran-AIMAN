@@ -1,6 +1,6 @@
 /* TASMIK QURAN 2026 - ULTIMATE PROFESSIONAL STYLESHEET 
    Theme: Deep Sea Blue Glassmorphism (Special Edition for IMAM AIMAN)
-   Version: 7.0 (Support Tahap 7 Muraja'ah & Manual Mode Fix)
+   Version: 7.1 (Support Tahap 7 & Decoration Fix)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
@@ -8,7 +8,7 @@
 :root {
     --primary-blue: #0a4d68; 
     --accent-blue: #088395;
-    --manual-color: #f59e0b; /* Warna Jingga untuk Manual Mode */
+    --manual-color: #f59e0b; 
     --soft-bg: #f0f4f7;
     --glass-bg: rgba(255, 255, 255, 0.95);
     --shadow-premium: 0 10px 30px rgba(10, 77, 104, 0.1);
@@ -78,6 +78,8 @@ html, body {
 /* 3. MAIN CONTAINER & CARD */
 .main-card {
     background: white;
+    position: relative;
+    z-index: 10;
     margin: 85px 15px 20px 15px !important; 
     height: calc(100vh - 190px); 
     border-radius: 25px;
@@ -103,7 +105,7 @@ html, body {
 
 .scroll-content::-webkit-scrollbar { display: none; }
 
-/* 4. MODE SWITCHER (BARU) */
+/* 4. MODE SWITCHER */
 #mode-selector-container {
     background: #f1f6f8;
     padding: 12px;
@@ -174,7 +176,6 @@ html, body {
     outline: none;
 }
 
-/* Manual Mode Active Highlight */
 .modern-input.manual-active {
     border: 2px solid var(--manual-color) !important;
     background: #fffcf0 !important;
@@ -263,4 +264,30 @@ html, body {
     text-align: center;
     margin-top: 5px;
     color: #ff4757;
+}
+
+/* 10. DECORATION FIX (MENGATASI IKON MELETUP) */
+/* Kod ini akan memastikan imej dekorasi kekal di latar belakang 
+   dan tidak menutup borang pada skrin telefon */
+
+.header-bg-decoration, .bg-icon, .decoration-img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: 200px; /* Hadkan ketinggian ikon */
+    object-fit: contain;
+    z-index: 1; /* Di belakang borang */
+    opacity: 0.2; /* Jadikan sedikit pudar supaya nampak eksklusif */
+    pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    /* Jika masih besar di telefon, kita hadkan lagi saiznya */
+    .header-bg-decoration, .bg-icon {
+        max-width: 150px; 
+        top: -20px;
+        left: -20px;
+    }
 }
