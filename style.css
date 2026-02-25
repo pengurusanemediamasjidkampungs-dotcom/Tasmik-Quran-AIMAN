@@ -1,270 +1,152 @@
-/* TASMIK QURAN 2026 - ULTIMATE PROFESSIONAL STYLESHEET 
-   Theme: Deep Sea Blue Glassmorphism (Special Edition for IMAM AIMAN)
-   Version: 8.2 (Stacked Scoring & UI Clean-up)
-*/
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-
+/* ROOT VARIABLES - Menggunakan tema Navy & Cyan Portfolio */
 :root {
-    --primary-blue: #0a4d68; 
-    --accent-blue: #088395;
-    --manual-color: #f59e0b; 
-    --soft-bg: #f0f4f7;
-    --glass-bg: rgba(255, 255, 255, 0.95);
-    --shadow-premium: 0 10px 30px rgba(10, 77, 104, 0.1);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --primary-color: #00d2ff;
+    --secondary-color: #0081a7;
+    --bg-dark: #0f172a;
+    --text-light: #f8fafc;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --cyan-glow: 0 0 15px rgba(0, 210, 255, 0.3);
 }
 
-/* 1. RESET & FOUNDATION */
+/* RESET & BASE STYLES */
 * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-    height: 100%;
     margin: 0;
     padding: 0;
-    background-color: var(--soft-bg);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #1a2a33;
-    overflow: hidden; 
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
 
-/* 2. TOP LOGO - FIXED OVERFLOW */
-.btn-home-float {
-    position: fixed !important;
-    top: 15px !important;
-    left: 15px !important;
-    width: 50px !important; 
-    height: 50px !important;
-    z-index: 5000;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(0,0,0,0.05);
-    overflow: hidden;
+body {
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 50px;
 }
 
-.btn-home-float img {
-    width: 80%;      
-    height: 80%;
-    object-fit: contain;
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* 3. MAIN CONTAINER & CARD */
-.main-card {
-    background: white;
-    position: relative;
-    z-index: 10;
-    /* Margin diselaraskan untuk paparan tanpa butang jantina */
-    margin: 75px 15px 20px 15px !important; 
-    height: calc(100vh - 180px); 
-    border-radius: 25px;
-    box-shadow: var(--shadow-premium);
+/* HEADER STYLE */
+header {
+    text-align: center;
+    padding: 40px 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+header h1 span {
+    color: var(--primary-color);
+    text-shadow: var(--cyan-glow);
+}
+
+/* GLASSMORPHISM CARD STYLE */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* FORM ELEMENTS */
+h3 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+input, select {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px;
+    color: white;
+    margin-bottom: 15px;
+    width: 100%;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    box-shadow: var(--cyan-glow);
+}
+
+/* TASMIK GRID & CARDS */
+.tasmik-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.surah-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 20px;
+    border-radius: 15px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.03);
-    animation: slideUp 0.6s ease-out;
+    justify-content: space-between;
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.surah-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
 }
 
-.scroll-content {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-    scrollbar-width: none; 
-}
-
-.scroll-content::-webkit-scrollbar { display: none; }
-
-/* 4. FORM ELEMENTS */
-.section-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.tahap-badge {
+    background: var(--secondary-color);
+    color: white;
     font-size: 0.7rem;
-    font-weight: 800;
-    color: var(--primary-blue);
+    padding: 4px 10px;
+    border-radius: 50px;
+    width: fit-content;
+    margin-bottom: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    font-weight: bold;
 }
 
-.modern-input {
-    width: 100%;
-    background: #f1f6f8;
-    border: 2px solid #e1e9ed;
-    border-radius: 12px;
-    padding: 12px 10px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    transition: var(--transition);
-}
-
-.modern-input:focus {
-    border-color: var(--accent-blue);
-    background: #ffffff;
-    outline: none;
-}
-
-/* 5. WHEEL PICKER & RATING STYLES */
-.wheel-picker {
-    background: #f1f6f8;
-    border: 2px solid #e1e9ed;
-    border-radius: 15px;
-    padding: 5px;
-    overflow-x: auto;
-    display: flex;
-    gap: 8px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.wheel-picker::-webkit-scrollbar { display: none; }
-
-.wheel-item {
-    flex: 0 0 auto;
-    padding: 10px 18px;
-    background: white;
+/* BUTTONS */
+.btn-check {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 12px;
     border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #94a3b8;
-    border: 1px solid #e1e9ed;
-    transition: var(--transition);
+    font-weight: bold;
     cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.wheel-item.selected {
-    background: var(--primary-blue);
-    color: white;
-    border-color: var(--primary-blue);
-    transform: scale(1.02);
+.btn-check:hover {
+    filter: brightness(1.2);
+    box-shadow: var(--cyan-glow);
 }
 
-/* Kotak Khas untuk Skor (Tajwid & Fasohah Atas-Bawah) */
-.grading-box {
-    background: #f8fafc;
-    border: 2px solid #e1e9ed;
-    border-radius: 20px;
-    padding: 15px;
+.btn-check:active {
+    transform: scale(0.98);
 }
 
-.grading-item {
-    margin-bottom: 5px;
-}
-
-.divider-thin {
-    height: 1px;
-    background: #e1e9ed;
-    margin: 15px 0;
-}
-
-/* Nombor 1-5 tersebar seimbang */
-.rating-picker {
-    justify-content: space-around;
-}
-
-.rating-picker .wheel-item {
-    flex: 1;
-    text-align: center;
-    margin: 0 2px;
-    padding: 12px 0;
-}
-
-/* 6. GRID LAYOUT FOR M/S & AYAT */
-.row-ayat {
-    display: flex;
-    gap: 10px;
-}
-.row-ayat > div { flex: 1; }
-
-/* 7. ACTION BUTTONS (FAB) */
-.action-buttons {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 100px;
-    pointer-events: none;
-    z-index: 6000;
-}
-
-.btn-record, .fab-send {
-    pointer-events: auto;
-    position: absolute !important;
-    bottom: 25px !important;
-    width: 65px !important;
-    height: 65px !important;
-    border-radius: 50% !important;
-    border: 5px solid #ffffff !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white !important;
-    font-size: 1.4rem !important;
-    box-shadow: 0 8px 25px rgba(10, 77, 104, 0.25) !important;
-}
-
-.btn-record { left: 25px !important; background: #ff4757 !important; }
-.fab-send { right: 25px !important; background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%) !important; }
-
-/* 8. OVERLAY & STATUS */
-#statusOverlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(10, 77, 104, 0.96);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.d-none { display: none !important; }
-
-/* 9. UTILITY & MODE SELECTOR */
-.mode-btn-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.mode-btn {
-    flex: 1;
-    padding: 10px;
-    border-radius: 12px;
-    border: 2px solid #e1e9ed;
-    background: white;
-    font-weight: 800;
-    font-size: 0.7rem;
-    color: #94a3b8;
-    transition: var(--transition);
-}
-
-.mode-btn.active {
-    border-color: var(--primary-blue);
-    background: var(--primary-blue);
-    color: white;
-}
-
-.manual-active {
-    border-color: var(--manual-color) !important;
-    color: var(--manual-color);
-}
-
-.divider {
-    height: 1px;
-    background: #e1e9ed;
-    margin: 20px 0;
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 600px) {
+    header h1 { font-size: 1.8rem; }
+    .glass-card { padding: 15px; }
 }
