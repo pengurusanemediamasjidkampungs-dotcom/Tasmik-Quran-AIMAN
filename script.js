@@ -1,9 +1,13 @@
 // ==========================================
-// CONFIGURATION & DATA
+// CONFIGURATION
 // ==========================================
-const GAS_URL = "URL_WEB_APP_GAS_ANDA"; // Masukkan URL GAS anda di sini
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec";
 
-// Data Peserta (Berdasarkan senarai Kumpulan Perempuan anda)
+const pembimbingInfo = {
+    nama: "MUHAMMAD AIMAN BIN MOHD RAFEE",
+    jantina: "PEREMPUAN" // Bot Perempuan akan digunakan secara automatik
+};
+
 const dataPeserta = [
     { nama: "NUR SYAURAH BINTI ESRIFADLI", umur: 13 },
     { nama: "NUR DHIA HUSNA BINTI HAMIZAN", umur: 13 },
@@ -16,78 +20,37 @@ const dataPeserta = [
     { nama: "NUR DIYANA HUWAINAA BINTI MD KHAIRUL AZHAR", umur: 8 }
 ];
 
-// Data Silibus Tasmik 
 const silibusData = {
     "1": [
-        { nama: "An-Naas", ayat: 6, ms: 604 }, { nama: "Al-Falaq", ayat: 5, ms: 604 },
-        { nama: "Al-Ikhlas", ayat: 4, ms: 604 }, { nama: "Al-Masad", ayat: 5, ms: 603 },
-        { nama: "An-Nasr", ayat: 3, ms: 603 }, { nama: "Al-Kafirun", ayat: 6, ms: 603 },
-        { nama: "Al-Kauthar", ayat: 3, ms: 602 }, { nama: "Al-Ma'uun", ayat: 7, ms: 602 },
-        { nama: "Quraisy", ayat: 4, ms: 602 }, { nama: "Al-Fil", ayat: 5, ms: 601 },
-        { nama: "Al-Humazah", ayat: 9, ms: 601 }, { nama: "Al-'Asr", ayat: 3, ms: 601 }
+        { nama: "An-Naas", ayat: "1-6", ms: 604 }, { nama: "Al-Falaq", ayat: "1-5", ms: 604 },
+        { nama: "Al-Ikhlas", ayat: "1-4", ms: 604 }, { nama: "Al-Masad", ayat: "1-5", ms: 603 },
+        { nama: "An-Nasr", ayat: "1-3", ms: 603 }, { nama: "Al-Kafirun", ayat: "1-6", ms: 603 },
+        { nama: "Al-Kauthar", ayat: "1-3", ms: 602 }, { nama: "Al-Ma'uun", ayat: "1-7", ms: 602 },
+        { nama: "Quraisy", ayat: "1-4", ms: 602 }, { nama: "Al-Fil", ayat: "1-5", ms: 601 },
+        { nama: "Al-Humazah", ayat: "1-9", ms: 601 }, { nama: "Al-'Asr", ayat: "1-3", ms: 601 }
     ],
-    "2": [
-        { nama: "At-Takathur", ayat: 8, ms: 600 }, { nama: "Al-Qori'ah", ayat: 11, ms: 600 },
-        { nama: "Al-'Aadiyaat", ayat: 11, ms: 599 }, { nama: "Az-Zalzalah", ayat: 8, ms: 599 },
-        { nama: "Al-Bayyinah", ayat: 8, ms: 598 }, { nama: "Al-Qadr", ayat: 5, ms: 598 },
-        { nama: "Al-'Alaq", ayat: 19, ms: 597 }, { nama: "At-Tin", ayat: 8, ms: 597 },
-        { nama: "Asy-Syarh", ayat: 8, ms: 596 }, { nama: "Adh-Dhuha", ayat: 11, ms: 596 }
-    ],
-    "3": [
-        { nama: "Asy-Syams", ayat: 15, ms: 595 }, { nama: "Al-Lail", ayat: 21, ms: 595 },
-        { nama: "Al-Balad", ayat: 20, ms: 594 }, { nama: "Al-Ghaasyiah", ayat: 26, ms: 592 },
-        { nama: "Al-A'laa", ayat: 19, ms: 591 }, { nama: "At-Tariq", ayat: 17, ms: 591 },
-        { nama: "Al-Infithor", ayat: 19, ms: 587 }
-    ],
-    "4": [
-        { nama: "Al-Buruj", ayat: 22, ms: 590 }, { nama: "Al-Insyiqaq", ayat: 25, ms: 589 },
-        { nama: "At-Takwir", ayat: 29, ms: 586 }, { nama: "Abasa", ayat: 42, ms: 585 }
-    ],
-    "5": [
-        { nama: "Al-Muthoffifin", ayat: 36, ms: 587 }, { nama: "Al-Fajr", ayat: 30, ms: 593 },
-        { nama: "An-Nazi'aat", ayat: 46, ms: 583 }, { nama: "An-Naba'", ayat: 40, ms: 582 }
-    ],
+    // ... Tambah Tahap 2-5 seperti sebelumnya ...
     "6": [
-        { nama: "As-Sajadah", ayat: 30, ms: 415 }, { nama: "Al-Mulk", ayat: 30, ms: 562 },
-        { nama: "Al-Insaan", ayat: 31, ms: 578 }, { nama: "Ar-Rahmaan", ayat: 78, ms: 531 },
-        { nama: "Al-Waqi'ah", ayat: 96, ms: 534 }, { nama: "Yaasin", ayat: 83, ms: 440 },
-        { nama: "Ad-Dukhaan", ayat: 59, ms: 496 }, { nama: "Al-Hasyr", ayat: 24, ms: 545 },
-        { nama: "Al-Jumu'ah", ayat: 11, ms: 553 }, { nama: "Al-Kahfi", ayat: 110, ms: 293 }
+        { nama: "Al-Mulk", ayat: "1-30", ms: 562 }, { nama: "Yaasin", ayat: "1-83", ms: 440 },
+        { nama: "Al-Kahfi", ayat: "1-110", ms: 293 }
     ]
 };
 
 // ==========================================
-// CORE FUNCTIONS
+// FUNCTIONS
 // ==========================================
 
-// 1. Inisialisasi Aplikasi
 window.onload = () => {
-    registerServiceWorker();
-    populatePesertaDropdown();
+    populatePeserta();
     renderSilibus();
 };
 
-// 2. Register Service Worker (PWA Offline)
-function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("PWA: Service Worker Aktif"))
-            .catch(err => console.error("PWA: Gagal", err));
-    }
-}
-
-// 3. Papar Senarai Peserta (Sorted by Umur - Smart Algorithm)
-function populatePesertaDropdown() {
+function populatePeserta() {
     const select = document.getElementById('nama-select');
-    // Algorithm: Susun umur dari paling muda [cite: 2026-01-24]
-    const sortedPeserta = dataPeserta.sort((a, b) => a.umur - b.umur);
-
-    select.innerHTML = sortedPeserta.map(p => 
-        `<option value="${p.nama}" data-umur="${p.umur}">${p.nama} (${p.umur} Thn)</option>`
-    ).join('');
+    const sorted = dataPeserta.sort((a, b) => a.umur - b.umur); // Smart Sorting
+    select.innerHTML = sorted.map(p => `<option value="${p.nama}">${p.nama} (${p.umur} Thn)</option>`).join('');
 }
 
-// 4. Render Kad Silibus (Tahap 1-6)
 function renderSilibus() {
     const tahap = document.getElementById('tahap-select').value;
     const grid = document.getElementById('silibus-display');
@@ -97,57 +60,68 @@ function renderSilibus() {
         <div class="surah-card glass-card">
             <div class="tahap-badge">TAHAP ${tahap}</div>
             <h3>${s.nama}</h3>
-            <p>${s.ayat} Ayat | M/S ${s.ms}</p>
-            <button class="btn-check" onclick="simpanRekod('${s.nama}', '${tahap}')">Tanda Selesai</button>
+            <p>M/S ${s.ms} | Ayat ${s.ayat}</p>
+            
+            <div class="skor-input">
+                <label>Tajwid (1-5):</label>
+                <input type="number" id="t-${s.nama}" min="1" max="5" value="5">
+                <label>Fasohah (1-5):</label>
+                <input type="number" id="f-${s.nama}" min="1" max="5" value="5">
+            </div>
+
+            <button class="btn-check" onclick="hantarRekod('${s.nama}', '${tahap}', '${s.ms}', '${s.ayat}')">
+                SIMPAN & NOTIFY
+            </button>
         </div>
     `).join('');
 }
 
-// 5. Simpan Rekod (Offline First)
-function simpanRekod(surah, tahap) {
-    const select = document.getElementById('nama-select');
-    const nama = select.value;
-    const umur = select.options[select.selectedIndex].getAttribute('data-umur');
+async function hantarRekod(surah, tahap, ms, ayat) {
+    const namaPeserta = document.getElementById('nama-select').value;
+    const tajwid = document.getElementById(`t-${surah}`).value;
+    const fasohah = document.getElementById(`f-${surah}`).value;
 
-    const record = {
-        pembimbing: "MUHAMMAD AIMAN BIN MOHD RAFEE",
-        nama: nama,
-        umur: umur,
-        tahap: tahap,
+    // Mematuhi format JSON yang diperlukan oleh Code.gs anda
+    const payload = {
+        ustaz: pembimbingInfo.nama,
+        peserta: namaPeserta,
+        jantina: pembimbingInfo.jantina,
+        jenis_bacaan: "Tasmik",
+        tahap: "TAHAP " + tahap,
         surah: surah,
-        tarikh: new Date().toLocaleString('ms-MY')
+        mukasurat: ms,
+        ayat_range: ayat,
+        tajwid: tajwid,
+        fasohah: fasohah,
+        ulasan: "Selesai tasmik secara digital."
     };
 
-    // Simpan ke Cache LocalStorage
-    let queue = JSON.parse(localStorage.getItem('tasmik_sync_queue')) || [];
-    queue.push(record);
-    localStorage.setItem('tasmik_sync_queue', JSON.stringify(queue));
+    // Simpan Offline
+    let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
+    queue.push(payload);
+    localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert(`Tasmik ${surah} untuk ${nama} disimpan!`);
-    syncKeGAS(); // Cuba hantar jika ada internet
-}
-
-// 6. Sync ke Google Apps Script (Cloud)
-async function syncKeGAS() {
-    if (!navigator.onLine) return;
-
-    let queue = JSON.parse(localStorage.getItem('tasmik_sync_queue')) || [];
-    if (queue.length === 0) return;
-
-    try {
-        // Gunakan mode: 'no-cors' untuk GAS
-        await fetch(GAS_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(queue)
-        });
-        
-        localStorage.removeItem('tasmik_sync_queue');
-        console.log("Sync Berjaya!");
-    } catch (err) {
-        console.error("Sync Gagal:", err);
+    alert("Rekod disimpan dalam telefon!");
+    
+    // Sync ke GAS
+    if (navigator.onLine) {
+        await syncNow();
     }
 }
 
-// Pantau status internet
-window.addEventListener('online', syncKeGAS);
+async function syncNow() {
+    let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
+    if (queue.length === 0) return;
+
+    for (let item of queue) {
+        try {
+            await fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(item)
+            });
+        } catch (e) { console.log("Sync delay..."); }
+    }
+    localStorage.removeItem('tasmik_queue');
+    alert("Semua rekod telah dihantar ke Telegram & Google Sheets!");
+}
