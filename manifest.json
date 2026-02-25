@@ -1,0 +1,22 @@
+{
+  "name": "Tasmik Smart System 2050",
+  "short_name": "Tasmik2050",
+  "description": "Offline Smartest Algorithm for Tasmik Management",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#00d2ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2904/2904845.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/192/2904/2904845.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
