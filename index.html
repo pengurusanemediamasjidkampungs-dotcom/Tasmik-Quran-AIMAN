@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasmik Smart PWA 2050</title>
     
+    <link rel="icon" type="image/png" href="icon_32.png">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,7 +30,6 @@
             flex-direction: column;
             font-size: 0.8rem;
         }
-        /* Menggunakan --primary dari style.css */
         .skor-item label { margin-bottom: 5px; color: #00d2ff; font-weight: bold; }
         .skor-item input { 
             margin-bottom: 0; 
@@ -37,7 +38,7 @@
             font-weight: bold;
             background: rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.1);
-            color: #4ade80; /* Warna hijau untuk skor */
+            color: #4ade80; 
             border-radius: 8px;
         }
         .status-sync {
@@ -55,13 +56,35 @@
             display: inline-block;
             margin-top: 10px;
         }
+
+        /* Gaya Khusus Header dengan Logo */
+        header {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 12px;
+            padding: 30px 0;
+        }
+        .logo-masjid {
+            width: 85px; 
+            height: 85px; 
+            border-radius: 20px; 
+            box-shadow: 0 0 20px rgba(0,210,255,0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>TASMIK<span>2050</span></h1>
-            <p>Pembimbing: <strong>MUHAMMAD AIMAN BIN MOHD RAFEE</strong></p>
+            <img src="icon_192.png" alt="Logo Masjid" class="logo-masjid">
+            
+            <div style="text-align: center;">
+                <h1>TASMIK<span>2050</span></h1>
+                <p>Pembimbing: <strong>MUHAMMAD AIMAN BIN MOHD RAFEE</strong></p>
+            </div>
+            
             <div id="offline-badge" style="display:none;">
                 <span style="color: #fbbf24;">⚠️ Mod Luar Talian Aktif</span>
             </div>
