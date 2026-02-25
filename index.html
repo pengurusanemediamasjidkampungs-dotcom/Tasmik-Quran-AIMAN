@@ -2,109 +2,117 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TASMIK DIGITAL - USTAZ AIMAN</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hjson/3.2.2/hjson.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasmik Smart PWA 2050</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* Elemen CSS Glassmorphism dari aimanrafee portfolio */
+        :root {
+            --primary: #00d2ff;
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; }
+        .container { max-width: 800px; margin: auto; padding: 20px; }
+        .tasmik-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .glass-card { 
+            background: var(--glass); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 20px; 
+            border-radius: 20px;
+        }
+        .btn-check {
+            background: var(--primary);
+            border: none; padding: 10px 20px; border-radius: 10px;
+            color: white; cursor: pointer; width: 100%; font-weight: bold;
+        }
+        .tahap-badge { color: var(--primary); font-size: 0.8rem; font-weight: bold; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1 style="text-align: center;">TASMIK<span>2050</span></h1>
+            <p style="text-align: center; opacity: 0.7;">Offline Smartest Algorithm System</p>
+        </header>
 
-    <div class="btn-home-float">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwY8E5K6m95LhshD_B096-7Y-Yh_2-0vIuKk-r_i-W9L_92x3Fp0iY6Wv8u6o5Q/s1600/logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3075/3075908.png'">
-    </div>
+        <section id="input-section" class="glass-card" style="margin-bottom: 30px;">
+            <h3>Daftar Sesi Tasmik</h3>
+            <input type="text" id="nama" placeholder="Nama Peserta" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px;">
+            <input type="number" id="umur" placeholder="Umur" style="width: 45%; padding: 10px; border-radius: 8px;">
+            <select id="tahap-select" onchange="renderSilibus()" style="width: 45%; padding: 10px; border-radius: 8px;">
+                <option value="1">Tahap 1</option>
+                <option value="2">Tahap 2</option>
+                <option value="3">Tahap 3</option>
+                <option value="4">Tahap 4</option>
+                <option value="5">Tahap 5</option>
+                <option value="6">Tahap 6</option>
+            </select>
+        </section>
 
-    <div class="main-card">
-        <div class="scroll-content">
-            
-            <div class="section-group">
-                <label class="form-label"><i class="fa-solid fa-user-graduate"></i> NAMA PELAJAR</label>
-                <div id="peserta-wrapper" class="wheel-picker">
-                    <div style="padding:10px; color:#999; font-size: 0.8rem;">Memuatkan data pelajar...</div>
-                </div>
+        <div id="silibus-display" class="tasmik-grid">
             </div>
-
-            <div class="section-group">
-                <label class="form-label"><i class="fa-solid fa-layer-group"></i> TAHAP TASMIK</label>
-                <div id="tahap-wrapper" class="wheel-picker"></div>
-            </div>
-
-            <div id="mode-selector-container" class="section-group d-none">
-                <label class="form-label"><i class="fa-solid fa-toggle-on"></i> MODE PEMILIHAN</label>
-                <div class="mode-btn-group">
-                    <button class="mode-btn active" id="btn-mode-auto">IKUT SILIBUS</button>
-                    <button class="mode-btn" id="btn-mode-manual">BEBAS / MURAJAAH</button>
-                </div>
-            </div>
-
-            <div class="section-group">
-                <label class="form-label"><i class="fa-solid fa-book-open"></i> SURAH / KELOMPOK</label>
-                <div id="surah-wrapper" class="wheel-picker"></div>
-            </div>
-
-            <div class="row-ayat">
-                <div class="section-group">
-                    <label class="form-label">MUKA SURAT</label>
-                    <input type="number" id="muka" class="modern-input" placeholder="000">
-                </div>
-                <div class="section-group">
-                    <label class="form-label">AYAT / RANGE</label>
-                    <input type="text" id="ayat_range" class="modern-input" placeholder="Contoh: 1-10">
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="grading-box">
-                <div class="grading-item">
-                    <label class="form-label"><i class="fa-solid fa-star"></i> SKOR TAJWID</label>
-                    <div id="tajwid-wrapper" class="wheel-picker rating-picker"></div>
-                </div>
-                
-                <div class="divider-thin"></div>
-
-                <div class="grading-item">
-                    <label class="form-label"><i class="fa-solid fa-wand-magic-sparkles"></i> SKOR FASOHAH</label>
-                    <div id="fasohah-wrapper" class="wheel-picker rating-picker"></div>
-                </div>
-            </div>
-
-            <div class="section-group" style="margin-top: 20px;">
-                <label class="form-label"><i class="fa-solid fa-comment-dots"></i> ULASAN GURU</label>
-                <textarea id="catatan" class="modern-input" rows="3" placeholder="Tulis ulasan bacaan pelajar di sini..."></textarea>
-            </div>
-
-            <div id="audio-container" class="section-group d-none">
-                <label class="form-label">DENGAR RAKAMAN</label>
-                <audio id="audioPlayback" controls style="width: 100%;"></audio>
-                <p id="recordStatus" style="font-size: 0.7rem; color: #ff4757; text-align: center; margin-top: 5px;"></p>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="action-buttons">
-        <button id="recordBtn" class="btn-record" title="Rakam Suara" onclick="toggleRecording()">
-            <i class="fa-solid fa-microphone"></i>
-        </button>
-        <button id="submitBtn" class="fab-send" title="Hantar Rekod" onclick="hantarTasmik()">
-            <i class="fa-solid fa-paper-plane"></i>
-        </button>
-    </div>
-
-    <div id="statusOverlay" class="d-none">
-        <div style="text-align: center; color: white;">
-            <i class="fa-solid fa-spinner fa-spin fa-3x"></i>
-            <p style="margin-top: 15px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">Menghantar Rekod...</p>
-        </div>
     </div>
 
     <script>
-        const script = document.createElement('script');
-        script.src = 'script.js?v=' + new Date().getTime();
-        document.body.appendChild(script);
-    </script>
+        // Data Silibus dari hjson anda
+        const silibusData = {
+            "1": [
+                { nama: "An-Naas", ayat: 6, ms: 604 }, { nama: "Al-Falaq", ayat: 5, ms: 604 },
+                { nama: "Al-Ikhlas", ayat: 4, ms: 604 }, { nama: "Al-Masad", ayat: 5, ms: 603 },
+                { nama: "An-Nasr", ayat: 3, ms: 603 }, { nama: "Al-Kafirun", ayat: 6, ms: 603 },
+                { nama: "Al-Kauthar", ayat: 3, ms: 602 }, { nama: "Al-Ma'uun", ayat: 7, ms: 602 },
+                { nama: "Quraisy", ayat: 4, ms: 602 }, { nama: "Al-Fil", ayat: 5, ms: 601 },
+                { nama: "Al-Humazah", ayat: 9, ms: 601 }, { nama: "Al-'Asr", ayat: 3, ms: 601 } [cite: 1, 2]
+            ],
+            "2": [
+                { nama: "At-Takathur", ayat: 8, ms: 600 }, { nama: "Al-Qori'ah", ayat: 11, ms: 600 },
+                { nama: "Al-'Aadiyaat", ayat: 11, ms: 599 }, { nama: "Az-Zalzalah", ayat: 8, ms: 599 },
+                { nama: "Al-Bayyinah", ayat: 8, ms: 598 }, { nama: "Al-Qadr", ayat: 5, ms: 598 },
+                { nama: "Al-'Alaq", ayat: 19, ms: 597 }, { nama: "At-Tin", ayat: 8, ms: 597 },
+                { nama: "Asy-Syarh", ayat: 8, ms: 596 }, { nama: "Adh-Dhuha", ayat: 11, ms: 596 } [cite: 3]
+            ],
+            "6": [
+                { nama: "As-Sajadah", ayat: 30, ms: 415 }, { nama: "Al-Mulk", ayat: 30, ms: 562 },
+                { nama: "Al-Insaan", ayat: 31, ms: 578 }, { nama: "Ar-Rahmaan", ayat: 78, ms: 531 },
+                { nama: "Al-Waqi'ah", ayat: 96, ms: 534 }, { nama: "Yaasin", ayat: 83, ms: 440 },
+                { nama: "Ad-Dukhaan", ayat: 59, ms: 496 }, { nama: "Al-Kahfi", ayat: 110, ms: 293 } [cite: 6]
+            ]
+            // Tambahkan Tahap 3, 4, 5 mengikut pola yang sama dari silibus.hjson anda.
+        };
 
+        function renderSilibus() {
+            const tahap = document.getElementById('tahap-select').value;
+            const display = document.getElementById('silibus-display');
+            const data = silibusData[tahap] || [];
+
+            display.innerHTML = data.map(s => `
+                <div class="glass-card">
+                    <span class="tahap-badge">TAHAP ${tahap}</span>
+                    <h3>${s.nama}</h3>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">${s.ayat} Ayat | Muka Surat ${s.ms}</p>
+                    <button class="btn-check" onclick="simpanTasmik('${s.nama}')">Tanda Selesai</button>
+                </div>
+            `).join('');
+        }
+
+        function simpanTasmik(surah) {
+            const nama = document.getElementById('nama').value;
+            const umur = document.getElementById('umur').value;
+            
+            const record = { nama, umur, surah, tarikh: new Date().toISOString() };
+            
+            // Logik Offline: Simpan dalam LocalStorage dahulu
+            let queue = JSON.parse(localStorage.getItem('tasmikQueue')) || [];
+            queue.push(record);
+            localStorage.setItem('tasmikQueue', JSON.stringify(queue));
+            
+            alert(`Rekod ${surah} disimpan! Sedia untuk Sync ke GAS.`);
+        }
+
+        window.onload = renderSilibus;
+    </script>
 </body>
 </html>
