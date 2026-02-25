@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasmik Smart PWA 2050</title>
+    
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
     
     <style>
-        /* Tambahan CSS khusus untuk Input Skor dalam Kad */
+        /* Penyelarasan pembolehubah dengan style.css */
         .skor-container {
             display: flex;
             gap: 10px;
             margin: 15px 0;
             background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .skor-item {
             flex: 1;
@@ -25,18 +28,32 @@
             flex-direction: column;
             font-size: 0.8rem;
         }
-        .skor-item label { margin-bottom: 5px; color: var(--primary-color); }
+        /* Menggunakan --primary dari style.css */
+        .skor-item label { margin-bottom: 5px; color: #00d2ff; font-weight: bold; }
         .skor-item input { 
             margin-bottom: 0; 
-            padding: 8px; 
+            padding: 10px; 
             text-align: center; 
-            font-weight: bold; 
+            font-weight: bold;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #4ade80; /* Warna hijau untuk skor */
+            border-radius: 8px;
         }
         .status-sync {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            padding: 10px;
+        }
+        #offline-badge {
+            background: rgba(251, 191, 36, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #fbbf24;
+            display: inline-block;
             margin-top: 10px;
-            color: #4ade80;
         }
     </style>
 </head>
@@ -44,26 +61,33 @@
     <div class="container">
         <header>
             <h1>TASMIK<span>2050</span></h1>
-            <p>Pembimbing: MUHAMMAD AIMAN BIN MOHD RAFEE</p>
-            <div id="offline-badge" style="display:none; color: #fbbf24; font-size: 0.8rem;">⚠️ Mod Luar Talian Aktif</div>
+            <p>Pembimbing: <strong>MUHAMMAD AIMAN BIN MOHD RAFEE</strong></p>
+            <div id="offline-badge" style="display:none;">
+                <span style="color: #fbbf24;">⚠️ Mod Luar Talian Aktif</span>
+            </div>
         </header>
 
         <section class="glass-card">
-            <h3>Pilih Peserta & Tahap</h3>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <label for="nama-select" style="font-size: 0.9rem; opacity: 0.8;">Nama Pelajar (Ikut Umur):</label>
-                <select id="nama-select">
-                    </select>
+            <h3>⚙️ Konfigurasi Sesi</h3>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label for="nama-select">Nama Pelajar (Ikut Umur):</label>
+                    <select id="nama-select">
+                        </select>
+                </div>
 
-                <label for="tahap-select" style="font-size: 0.9rem; opacity: 0.8;">Pilih Tahap Silibus:</label>
-                <select id="tahap-select" onchange="renderSilibus()">
-                    <option value="1">Tahap 1: Surah Pendek</option>
-                    <option value="2">Tahap 2: Pertengahan 1</option>
-                    <option value="3">Tahap 3: Pertengahan 2</option>
-                    <option value="4">Tahap 4: Surah Panjang 1</option>
-                    <option value="5">Tahap 5: Surah Panjang 2</option>
-                    <option value="6">Tahap 6: Surah Pilihan</option>
-                </select>
+                <div>
+                    <label for="tahap-select">Pilih Tahap Silibus:</label>
+                    <select id="tahap-select" onchange="renderSilibus()">
+                        <option value="1">Tahap 1: Surah Pendek</option>
+                        <option value="2">Tahap 2: Pertengahan 1</option>
+                        <option value="3">Tahap 3: Pertengahan 2</option>
+                        <option value="4">Tahap 4: Surah Panjang 1</option>
+                        <option value="5">Tahap 5: Surah Panjang 2</option>
+                        <option value="6">Tahap 6: Surah Pilihan</option>
+                        <option value="7">Tahap 7: 🔄 Muraja'ah (Ulangan)</option>
+                    </select>
+                </div>
             </div>
         </section>
 
@@ -71,20 +95,26 @@
             </div>
 
         <footer class="status-sync" id="sync-status">
-            Sistem Sedia. Data akan dihantar ke Google Sheets & Telegram.
+            ✨ Sistem Sedia. Data akan disinkron ke Cloud & Telegram.
         </footer>
     </div>
 
     <script src="script.js"></script>
+    
     <script>
-        // Logik Tambahan untuk Paparan Status Internet
+        // Logik Status Rangkaian (Network Status)
         window.addEventListener('online', () => {
             document.getElementById('offline-badge').style.display = 'none';
-            document.getElementById('sync-status').innerText = "Internet dikesan. Menghantar data tertunggak...";
+            const status = document.getElementById('sync-status');
+            status.innerHTML = "✅ Internet disambung. Menghantar data tertunggak...";
+            status.style.color = "#4ade80";
         });
+
         window.addEventListener('offline', () => {
-            document.getElementById('offline-badge').style.display = 'block';
-            document.getElementById('sync-status').innerText = "Mod Offline: Data disimpan dalam telefon.";
+            document.getElementById('offline-badge').style.display = 'inline-block';
+            const status = document.getElementById('sync-status');
+            status.innerHTML = "☁️ Mod Offline: Rekod disimpan dalam memori telefon.";
+            status.style.color = "#fbbf24";
         });
     </script>
 </body>
