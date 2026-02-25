@@ -1,24 +1,12 @@
 // ==========================================
-// CONFIGURATION
+// CONFIGURATION & FULL SYLLABUS DATA
 // ==========================================
 const GAS_URL = "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec";
 
 const pembimbingInfo = {
     nama: "MUHAMMAD AIMAN BIN MOHD RAFEE",
-    jantina: "PEREMPUAN" // Bot Perempuan akan digunakan secara automatik
+    jantina: "PEREMPUAN"
 };
-
-const dataPeserta = [
-    { nama: "NUR SYAURAH BINTI ESRIFADLI", umur: 13 },
-    { nama: "NUR DHIA HUSNA BINTI HAMIZAN", umur: 13 },
-    { nama: "NUR DAMIA HUMAIRA BINTI MD KHAIRUL AZHAR", umur: 12 },
-    { nama: "NUR ALYA FATINI BINTI MOHAMAD SSIBAH", umur: 11 },
-    { nama: "ZAHIYYATUL HUSNA BINTI NORIZAM", umur: 10 },
-    { nama: "NUR AESHA HUMAIRA BINTI MUHAMMAD AZFAR", umur: 9 },
-    { nama: "ADAWIYAH HUMAIRA BINTI SHAHRIN", umur: 9 },
-    { nama: "HIDAYATUL ZAHIROH BINTI NORIZAM", umur: 9 },
-    { nama: "NUR DIYANA HUWAINAA BINTI MD KHAIRUL AZHAR", umur: 8 }
-];
 
 const silibusData = {
     "1": [
@@ -29,10 +17,42 @@ const silibusData = {
         { nama: "Quraisy", ayat: "1-4", ms: 602 }, { nama: "Al-Fil", ayat: "1-5", ms: 601 },
         { nama: "Al-Humazah", ayat: "1-9", ms: 601 }, { nama: "Al-'Asr", ayat: "1-3", ms: 601 }
     ],
-    // ... Tambah Tahap 2-5 seperti sebelumnya ...
+    "2": [
+        { nama: "At-Takathur", ayat: "1-8", ms: 600 }, { nama: "Al-Qori'ah", ayat: "1-11", ms: 600 },
+        { nama: "Al-'Aadiyaat", ayat: "1-11", ms: 599 }, { nama: "Az-Zalzalah", ayat: "1-8", ms: 599 },
+        { nama: "Al-Bayyinah", ayat: "1-8", ms: 598 }, { nama: "Al-Qadr", ayat: "1-5", ms: 598 },
+        { nama: "Al-'Alaq", ayat: "1-19", ms: 597 }, { nama: "At-Tin", ayat: "1-8", ms: 597 },
+        { nama: "Asy-Syarh", ayat: "1-8", ms: 596 }, { nama: "Adh-Dhuha", ayat: "1-11", ms: 596 }
+    ],
+    "3": [
+        { nama: "Asy-Syams", ayat: "1-15", ms: 595 }, { nama: "Al-Lail", ayat: "1-21", ms: 595 },
+        { nama: "Al-Balad", ayat: "1-20", ms: 594 }, { nama: "Al-Ghaasyiah", ayat: "1-26", ms: 592 },
+        { nama: "Al-A'laa", ayat: "1-19", ms: 591 }, { nama: "At-Tariq", ayat: "1-17", ms: 591 },
+        { nama: "Al-Infithor", ayat: "1-19", ms: 587 }
+    ],
+    "4": [
+        { nama: "Al-Buruj", ayat: "1-22", ms: 590 }, { nama: "Al-Insyiqaq", ayat: "1-25", ms: 589 },
+        { nama: "At-Takwir", ayat: "1-29", ms: 586 }, { nama: "Abasa", ayat: "1-42", ms: 585 }
+    ],
+    "5": [
+        { nama: "Al-Muthoffifin", ayat: "1-36", ms: 587 }, { nama: "Al-Fajr", ayat: "1-30", ms: 593 },
+        { nama: "An-Nazi'aat", ayat: "1-46", ms: 583 }, { nama: "An-Naba'", ayat: "1-40", ms: 582 }
+    ],
     "6": [
-        { nama: "Al-Mulk", ayat: "1-30", ms: 562 }, { nama: "Yaasin", ayat: "1-83", ms: 440 },
-        { nama: "Al-Kahfi", ayat: "1-110", ms: 293 }
+        { nama: "As-Sajadah", ayat: "1-30", ms: 415 }, { nama: "Al-Mulk", ayat: "1-30", ms: 562 },
+        { nama: "Al-Insaan", ayat: "1-31", ms: 578 }, { nama: "Ar-Rahmaan", ayat: "1-78", ms: 531 },
+        { nama: "Al-Waqi'ah", ayat: "1-96", ms: 534 }, { nama: "Yaasin", ayat: "1-83", ms: 440 },
+        { nama: "Ad-Dukhaan", ayat: "1-59", ms: 496 }, { nama: "Al-Hasyr", ayat: "1-24", ms: 545 },
+        { nama: "Al-Jumu'ah", ayat: "1-11", ms: 553 }, { nama: "Al-Kahfi", ayat: "1-110", ms: 293 }
+    ],
+    "7": [
+        { nama: "Muraja'ah Tahap 1", ayat: "Juz Amma", ms: "601-604" },
+        { nama: "Muraja'ah Tahap 2", ayat: "Juz Amma", ms: "596-600" },
+        { nama: "Muraja'ah Tahap 3", ayat: "Juz Amma", ms: "587-595" },
+        { nama: "Muraja'ah Tahap 4", ayat: "Juz Amma", ms: "585-590" },
+        { nama: "Muraja'ah Tahap 5", ayat: "Juz Amma", ms: "582-593" },
+        { nama: "Muraja'ah Tahap 6", ayat: "10 Pilihan", ms: "-" },
+        { nama: "Input Manual", ayat: "Catatan", ms: "-" }
     ]
 };
 
