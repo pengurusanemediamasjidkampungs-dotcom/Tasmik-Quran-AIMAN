@@ -6,113 +6,86 @@
     <title>Tasmik Smart PWA 2050</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
     <style>
-        /* Elemen CSS Glassmorphism dari aimanrafee portfolio */
-        :root {
-            --primary: #00d2ff;
-            --bg: #0f172a;
-            --glass: rgba(255, 255, 255, 0.05);
+        /* Tambahan CSS khusus untuk Input Skor dalam Kad */
+        .skor-container {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
         }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; }
-        .container { max-width: 800px; margin: auto; padding: 20px; }
-        .tasmik-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .glass-card { 
-            background: var(--glass); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            padding: 20px; 
-            border-radius: 20px;
+        .skor-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            font-size: 0.8rem;
         }
-        .btn-check {
-            background: var(--primary);
-            border: none; padding: 10px 20px; border-radius: 10px;
-            color: white; cursor: pointer; width: 100%; font-weight: bold;
+        .skor-item label { margin-bottom: 5px; color: var(--primary-color); }
+        .skor-item input { 
+            margin-bottom: 0; 
+            padding: 8px; 
+            text-align: center; 
+            font-weight: bold; 
         }
-        .tahap-badge { color: var(--primary); font-size: 0.8rem; font-weight: bold; }
+        .status-sync {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 10px;
+            color: #4ade80;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1 style="text-align: center;">TASMIK<span>2050</span></h1>
-            <p style="text-align: center; opacity: 0.7;">Offline Smartest Algorithm System</p>
+            <h1>TASMIK<span>2050</span></h1>
+            <p>Pembimbing: MUHAMMAD AIMAN BIN MOHD RAFEE</p>
+            <div id="offline-badge" style="display:none; color: #fbbf24; font-size: 0.8rem;">⚠️ Mod Luar Talian Aktif</div>
         </header>
 
-        <section id="input-section" class="glass-card" style="margin-bottom: 30px;">
-            <h3>Daftar Sesi Tasmik</h3>
-            <input type="text" id="nama" placeholder="Nama Peserta" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px;">
-            <input type="number" id="umur" placeholder="Umur" style="width: 45%; padding: 10px; border-radius: 8px;">
-            <select id="tahap-select" onchange="renderSilibus()" style="width: 45%; padding: 10px; border-radius: 8px;">
-                <option value="1">Tahap 1</option>
-                <option value="2">Tahap 2</option>
-                <option value="3">Tahap 3</option>
-                <option value="4">Tahap 4</option>
-                <option value="5">Tahap 5</option>
-                <option value="6">Tahap 6</option>
-            </select>
+        <section class="glass-card">
+            <h3>Pilih Peserta & Tahap</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label for="nama-select" style="font-size: 0.9rem; opacity: 0.8;">Nama Pelajar (Ikut Umur):</label>
+                <select id="nama-select">
+                    </select>
+
+                <label for="tahap-select" style="font-size: 0.9rem; opacity: 0.8;">Pilih Tahap Silibus:</label>
+                <select id="tahap-select" onchange="renderSilibus()">
+                    <option value="1">Tahap 1: Surah Pendek</option>
+                    <option value="2">Tahap 2: Pertengahan 1</option>
+                    <option value="3">Tahap 3: Pertengahan 2</option>
+                    <option value="4">Tahap 4: Surah Panjang 1</option>
+                    <option value="5">Tahap 5: Surah Panjang 2</option>
+                    <option value="6">Tahap 6: Surah Pilihan</option>
+                </select>
+            </div>
         </section>
 
         <div id="silibus-display" class="tasmik-grid">
             </div>
+
+        <footer class="status-sync" id="sync-status">
+            Sistem Sedia. Data akan dihantar ke Google Sheets & Telegram.
+        </footer>
     </div>
 
+    <script src="script.js"></script>
     <script>
-        // Data Silibus dari hjson anda
-        const silibusData = {
-            "1": [
-                { nama: "An-Naas", ayat: 6, ms: 604 }, { nama: "Al-Falaq", ayat: 5, ms: 604 },
-                { nama: "Al-Ikhlas", ayat: 4, ms: 604 }, { nama: "Al-Masad", ayat: 5, ms: 603 },
-                { nama: "An-Nasr", ayat: 3, ms: 603 }, { nama: "Al-Kafirun", ayat: 6, ms: 603 },
-                { nama: "Al-Kauthar", ayat: 3, ms: 602 }, { nama: "Al-Ma'uun", ayat: 7, ms: 602 },
-                { nama: "Quraisy", ayat: 4, ms: 602 }, { nama: "Al-Fil", ayat: 5, ms: 601 },
-                { nama: "Al-Humazah", ayat: 9, ms: 601 }, { nama: "Al-'Asr", ayat: 3, ms: 601 } [cite: 1, 2]
-            ],
-            "2": [
-                { nama: "At-Takathur", ayat: 8, ms: 600 }, { nama: "Al-Qori'ah", ayat: 11, ms: 600 },
-                { nama: "Al-'Aadiyaat", ayat: 11, ms: 599 }, { nama: "Az-Zalzalah", ayat: 8, ms: 599 },
-                { nama: "Al-Bayyinah", ayat: 8, ms: 598 }, { nama: "Al-Qadr", ayat: 5, ms: 598 },
-                { nama: "Al-'Alaq", ayat: 19, ms: 597 }, { nama: "At-Tin", ayat: 8, ms: 597 },
-                { nama: "Asy-Syarh", ayat: 8, ms: 596 }, { nama: "Adh-Dhuha", ayat: 11, ms: 596 } [cite: 3]
-            ],
-            "6": [
-                { nama: "As-Sajadah", ayat: 30, ms: 415 }, { nama: "Al-Mulk", ayat: 30, ms: 562 },
-                { nama: "Al-Insaan", ayat: 31, ms: 578 }, { nama: "Ar-Rahmaan", ayat: 78, ms: 531 },
-                { nama: "Al-Waqi'ah", ayat: 96, ms: 534 }, { nama: "Yaasin", ayat: 83, ms: 440 },
-                { nama: "Ad-Dukhaan", ayat: 59, ms: 496 }, { nama: "Al-Kahfi", ayat: 110, ms: 293 } [cite: 6]
-            ]
-            // Tambahkan Tahap 3, 4, 5 mengikut pola yang sama dari silibus.hjson anda.
-        };
-
-        function renderSilibus() {
-            const tahap = document.getElementById('tahap-select').value;
-            const display = document.getElementById('silibus-display');
-            const data = silibusData[tahap] || [];
-
-            display.innerHTML = data.map(s => `
-                <div class="glass-card">
-                    <span class="tahap-badge">TAHAP ${tahap}</span>
-                    <h3>${s.nama}</h3>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">${s.ayat} Ayat | Muka Surat ${s.ms}</p>
-                    <button class="btn-check" onclick="simpanTasmik('${s.nama}')">Tanda Selesai</button>
-                </div>
-            `).join('');
-        }
-
-        function simpanTasmik(surah) {
-            const nama = document.getElementById('nama').value;
-            const umur = document.getElementById('umur').value;
-            
-            const record = { nama, umur, surah, tarikh: new Date().toISOString() };
-            
-            // Logik Offline: Simpan dalam LocalStorage dahulu
-            let queue = JSON.parse(localStorage.getItem('tasmikQueue')) || [];
-            queue.push(record);
-            localStorage.setItem('tasmikQueue', JSON.stringify(queue));
-            
-            alert(`Rekod ${surah} disimpan! Sedia untuk Sync ke GAS.`);
-        }
-
-        window.onload = renderSilibus;
+        // Logik Tambahan untuk Paparan Status Internet
+        window.addEventListener('online', () => {
+            document.getElementById('offline-badge').style.display = 'none';
+            document.getElementById('sync-status').innerText = "Internet dikesan. Menghantar data tertunggak...";
+        });
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-badge').style.display = 'block';
+            document.getElementById('sync-status').innerText = "Mod Offline: Data disimpan dalam telefon.";
+        });
     </script>
 </body>
 </html>
