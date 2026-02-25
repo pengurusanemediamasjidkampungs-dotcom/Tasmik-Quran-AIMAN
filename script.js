@@ -1,5 +1,20 @@
 // ==========================================
-// CONFIGURATION & FULL SYLLABUS DATA
+// 1. DATA PESERTA (WAJIB ADA UNTUK POPULATE)
+// ==========================================
+const dataPeserta = [
+    { nama: "NUR SYAURAH BINTI ESRIFADLI", umur: 13 },
+    { nama: "NUR DHIA HUSNA BINTI HAMIZAN", umur: 13 },
+    { nama: "NUR DAMIA HUMAIRA BINTI MD KHAIRUL AZHAR", umur: 12 },
+    { nama: "NUR ALYA FATINI BINTI MOHAMAD SSIBAH", umur: 11 },
+    { nama: "ZAHIYYATUL HUSNA BINTI NORIZAM", umur: 10 },
+    { nama: "NUR AESHA HUMAIRA BINTI MUHAMMAD AZFAR", umur: 9 },
+    { nama: "ADAWIYAH HUMAIRA BINTI SHAHRIN", umur: 9 },
+    { nama: "HIDAYATUL ZAHIROH BINTI NORIZAM", umur: 9 },
+    { nama: "NUR DIYANA HUWAINAA BINTI MD KHAIRUL AZHAR", umur: 8 }
+];
+
+// ==========================================
+// 2. CONFIGURATION & FULL SYLLABUS DATA
 // ==========================================
 const GAS_URL = "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec";
 
@@ -57,7 +72,7 @@ const silibusData = {
 };
 
 // ==========================================
-// FUNCTIONS
+// 3. FUNCTIONS
 // ==========================================
 
 window.onload = () => {
@@ -67,8 +82,14 @@ window.onload = () => {
 
 function populatePeserta() {
     const select = document.getElementById('nama-select');
-    const sorted = dataPeserta.sort((a, b) => a.umur - b.umur); // Smart Sorting
-    select.innerHTML = sorted.map(p => `<option value="${p.nama}">${p.nama} (${p.umur} Thn)</option>`).join('');
+    if (!select) return;
+    
+    // Algorithm: Susun umur dari paling muda [cite: 2026-01-24]
+    const sorted = [...dataPeserta].sort((a, b) => a.umur - b.umur); 
+    
+    select.innerHTML = sorted.map(p => 
+        `<option value="${p.nama}">${p.nama} (${p.umur} Thn)</option>`
+    ).join('');
 }
 
 function renderSilibus() {
@@ -82,11 +103,15 @@ function renderSilibus() {
             <h3>${s.nama}</h3>
             <p>M/S ${s.ms} | Ayat ${s.ayat}</p>
             
-            <div class="skor-input">
-                <label>Tajwid (1-5):</label>
-                <input type="number" id="t-${s.nama}" min="1" max="5" value="5">
-                <label>Fasohah (1-5):</label>
-                <input type="number" id="f-${s.nama}" min="1" max="5" value="5">
+            <div class="skor-container">
+                <div class="skor-item">
+                    <label>Tajwid</label>
+                    <input type="number" id="t-${s.nama}" min="1" max="5" value="5">
+                </div>
+                <div class="skor-item">
+                    <label>Fasohah</label>
+                    <input type="number" id="f-${s.nama}" min="1" max="5" value="5">
+                </div>
             </div>
 
             <button class="btn-check" onclick="hantarRekod('${s.nama}', '${tahap}', '${s.ms}', '${s.ayat}')">
@@ -101,12 +126,11 @@ async function hantarRekod(surah, tahap, ms, ayat) {
     const tajwid = document.getElementById(`t-${surah}`).value;
     const fasohah = document.getElementById(`f-${surah}`).value;
 
-    // Mematuhi format JSON yang diperlukan oleh Code.gs anda
     const payload = {
         ustaz: pembimbingInfo.nama,
         peserta: namaPeserta,
         jantina: pembimbingInfo.jantina,
-        jenis_bacaan: "Tasmik",
+        jenis_bacaan: (tahap === "7") ? "Muraja'ah" : "Tasmik",
         tahap: "TAHAP " + tahap,
         surah: surah,
         mukasurat: ms,
@@ -116,14 +140,12 @@ async function hantarRekod(surah, tahap, ms, ayat) {
         ulasan: "Selesai tasmik secara digital."
     };
 
-    // Simpan Offline
     let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
     queue.push(payload);
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert("Rekod disimpan dalam telefon!");
+    alert(`Rekod ${surah} untuk ${namaPeserta} disimpan!`);
     
-    // Sync ke GAS
     if (navigator.onLine) {
         await syncNow();
     }
@@ -133,15 +155,16 @@ async function syncNow() {
     let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
     if (queue.length === 0) return;
 
-    for (let item of queue) {
+    for (let i = 0; i < queue.length; i++) {
         try {
             await fetch(GAS_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify(item)
+                body: JSON.stringify(queue[i])
             });
-        } catch (e) { console.log("Sync delay..."); }
+        } catch (e) { 
+            console.error("Sync error:", e); 
+        }
     }
     localStorage.removeItem('tasmik_queue');
-    alert("Semua rekod telah dihantar ke Telegram & Google Sheets!");
 }
