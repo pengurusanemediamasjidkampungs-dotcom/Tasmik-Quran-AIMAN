@@ -99,7 +99,7 @@ label {
     letter-spacing: 0.5px;
 }
 
-select, input[type="text"] {
+select, input[type="text"], input[type="number"] {
     width: 100%;
     padding: 14px;
     background: rgba(0, 0, 0, 0.3);
@@ -112,7 +112,57 @@ select, input[type="text"] {
     transition: all 0.3s ease;
 }
 
-/* --- PEMARKAHAN 1-5 (NEW & IMPROVED) --- */
+/* --- COMPACT PICKER (NEW) --- */
+.compact-picker-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.picker-box {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.picker-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.picker-box select, .picker-box input {
+    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    color: var(--primary) !important;
+    font-size: 1.2rem !important;
+    font-weight: 800;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+    -moz-appearance: textfield; /* Buang spinner untuk Firefox */
+}
+
+/* Buang spinner untuk Chrome, Safari, Edge */
+.picker-box input::-webkit-outer-spin-button,
+.picker-box input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* --- PEMARKAHAN 1-5 --- */
 .rating-section {
     display: flex;
     flex-direction: column;
@@ -149,6 +199,7 @@ select, input[type="text"] {
     color: var(--text-dim);
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     font-size: 1.1rem;
+    margin-bottom: 0; /* Override label default margin */
 }
 
 .button-group input[type="radio"]:checked + label {
@@ -159,17 +210,16 @@ select, input[type="text"] {
     transform: translateY(-2px);
 }
 
-/* Warna hijau untuk markah penuh */
 .button-group input[type="radio"][value="5"]:checked + label {
     background: var(--accent);
     border-color: var(--accent);
     box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
 }
 
-/* --- KEMASKINI GRID NOMBOR (PICKER) --- */
+/* --- GRID SURAH --- */
 .number-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr); /* Tukar ke 3 kolum untuk nama surah */
     gap: 8px;
     max-height: 180px;
     overflow-y: auto;
@@ -178,15 +228,6 @@ select, input[type="text"] {
     border-radius: 14px;
     border: 1px solid var(--glass-border);
     margin-bottom: 10px;
-}
-
-/* Custom Scrollbar */
-.number-grid::-webkit-scrollbar {
-    width: 4px;
-}
-.number-grid::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 10px;
 }
 
 .num-btn {
@@ -199,7 +240,7 @@ select, input[type="text"] {
     text-align: center;
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .num-btn.active {
@@ -208,6 +249,10 @@ select, input[type="text"] {
     box-shadow: var(--glow);
     border-color: var(--primary);
 }
+
+/* Custom Scrollbar */
+.number-grid::-webkit-scrollbar { width: 4px; }
+.number-grid::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
 /* BUTTONS */
 .btn-check {
@@ -226,14 +271,10 @@ select, input[type="text"] {
     margin-top: 10px;
 }
 
-.btn-check:active {
-    transform: scale(0.98);
-}
+.btn-check:active { transform: scale(0.98); }
 
 /* STATUS & BADGES */
-#offline-badge {
-    animation: pulse 2s infinite;
-}
+#offline-badge { animation: pulse 2s infinite; }
 
 @keyframes pulse {
     0% { opacity: 0.6; }
@@ -241,14 +282,8 @@ select, input[type="text"] {
     100% { opacity: 0.6; }
 }
 
-.tahap-badge {
-    background: rgba(0, 210, 255, 0.1);
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 0.65rem;
-    font-weight: 900;
-    margin-bottom: 8px;
-    display: inline-block;
+#sync-status {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 10px;
 }
