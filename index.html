@@ -2,164 +2,304 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasmik Smart PWA 2050</title>
-    
-    <link rel="icon" type="image/png" href="icon_32.png">
-    
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0f172a">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>TASMIK 2050</title>
     <style>
-        /* Penyelarasan pembolehubah dengan style.css */
-        .skor-container {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .skor-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            font-size: 0.8rem;
-        }
-        .skor-item label { margin-bottom: 5px; color: #00d2ff; font-weight: bold; }
-        .skor-item input { 
-            margin-bottom: 0; 
-            padding: 10px; 
-            text-align: center; 
-            font-weight: bold;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #4ade80; 
-            border-radius: 8px;
-        }
-        .status-sync {
-            font-size: 0.75rem;
-            text-align: center;
-            margin-top: 20px;
-            color: #94a3b8;
-            padding: 10px;
-        }
-        #offline-badge {
-            background: rgba(251, 191, 36, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            border: 1px solid #fbbf24;
-            display: inline-block;
-            margin-top: 10px;
+        /* TASMIK SMART SYSTEM 2050 - ULTIMATE STYLE
+           Vibe: Solid, Futuristic, Glassmorphism
+        */
+
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0081a7;
+            --accent: #4ade80;
+            --warning: #fbbf24;
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(0, 210, 255, 0.6);
         }
 
-        /* --- KEMASKINI GAYA LOGO BULAT & GLOWING --- */
-        header {
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 15px;
-            padding: 40px 0 20px 0;
+        /* RESET & SMOOTH SCROLLING */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(74, 222, 128, 0.05) 0%, transparent 20%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) 20px 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
         .logo-masjid {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
-            border: 2px solid #00d2ff;
+            border-radius: 50%;
+            border: 2px solid var(--primary); 
             background: #000;
-            box-shadow: 
-                0 0 15px rgba(0, 210, 255, 0.7), 
-                0 0 30px rgba(0, 210, 255, 0.4),
-                inset 0 0 15px rgba(0, 210, 255, 0.2);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px var(--primary), 0 0 30px rgba(0, 210, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .logo-masjid:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 40px #00d2ff;
+            transform: scale(1.1) rotate(5deg);
         }
+
+        header h1 {
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        header h1 span {
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        /* CARDS & GLASS EFFECT */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        /* FORM ELEMENTS */
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        /* --- SKOR & RATING SYSTEM (MODERNIZED) --- */
+        .rating-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 10px 0 20px 0;
+        }
+
+        .rating-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 18px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .button-group input[type="radio"] {
+            display: none;
+        }
+
+        .button-group label {
+            flex: 1;
+            padding: 14px 0;
+            text-align: center;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            color: var(--text-dim);
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .button-group input[type="radio"]:checked + label {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+
+        /* Special color for score 5 */
+        .button-group input[type="radio"][value="5"]:checked + label {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+        }
+
+        /* --- GRID NOMBOR (PICKER) --- */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 15px;
+        }
+
+        .num-btn {
+            padding: 12px 0;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .num-btn.active {
+            background: var(--primary);
+            color: #000;
+            box-shadow: var(--glow);
+        }
+
+        /* BUTTONS */
+        .btn-check {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 18px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-check:active { transform: scale(0.98); }
+
+        /* Custom Scrollbar */
+        .number-grid::-webkit-scrollbar { width: 4px; }
+        .number-grid::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="icon_512.png" alt="Logo Masjid" class="logo-masjid">
-            
-            <div style="text-align: center;">
-                <h1>TASMIK<span>2050</span></h1>
-                <p>Pembimbing: <strong>MUHAMMAD AIMAN BIN MOHD RAFEE</strong></p>
+
+<div class="container">
+    <header>
+        <img src="icon_512.png" alt="Logo" class="logo-masjid">
+        <h1>TASMIK<span>2050</span></h1>
+    </header>
+
+    <div class="glass-card">
+        <label>Nama Pelajar</label>
+        <input type="text" placeholder="Masukkan nama...">
+
+        <label>Pilih Tahap Silibus</label>
+        <select>
+            <option>Tahap 1: Surah Pendek</option>
+            <option>Tahap 2: Pertengahan</option>
+        </select>
+
+        <label>Muka Surat</label>
+        <div class="number-grid" id="pageGrid">
+            <div class="num-btn">1</div>
+            <div class="num-btn">2</div>
+            <div class="num-btn">3</div>
+            <div class="num-btn">4</div>
+            <div class="num-btn">5</div>
+            <div class="num-btn">6</div>
+            <div class="num-btn">7</div>
+            <div class="num-btn">8</div>
+            <div class="num-btn">9</div>
+            <div class="num-btn">10</div>
+        </div>
+
+        <div class="rating-section">
+            <div class="rating-container">
+                <label>⭐ Markah Tajwid</label>
+                <div class="button-group">
+                    <input type="radio" id="t1" name="tajwid" value="1"><label for="t1">1</label>
+                    <input type="radio" id="t2" name="tajwid" value="2"><label for="t2">2</label>
+                    <input type="radio" id="t3" name="tajwid" value="3"><label for="t3">3</label>
+                    <input type="radio" id="t4" name="tajwid" value="4"><label for="t4">4</label>
+                    <input type="radio" id="t5" name="tajwid" value="5"><label for="t5">5</label>
+                </div>
             </div>
-            
-            <div id="offline-badge" style="display:none;">
-                <span style="color: #fbbf24;">⚠️ Mod Luar Talian Aktif</span>
-            </div>
-        </header>
 
-        <section class="glass-card">
-            <h3>⚙️ Konfigurasi Sesi</h3>
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <div>
-                    <label for="nama-select">Nama Pelajar (Ikut Umur):</label>
-                    <select id="nama-select"></select>
-                </div>
-
-                <div>
-                    <label for="tahap-select">Pilih Tahap Silibus:</label>
-                    <select id="tahap-select" onchange="renderSilibus()">
-                        <option value="1">Tahap 1: Surah Pendek</option>
-                        <option value="2">Tahap 2: Pertengahan 1</option>
-                        <option value="3">Tahap 3: Pertengahan 2</option>
-                        <option value="4">Tahap 4: Surah Panjang 1</option>
-                        <option value="5">Tahap 5: Surah Panjang 2</option>
-                        <option value="6">Tahap 6: Surah Pilihan</option>
-                        <option value="7">Tahap 7: 🔄 Muraja'ah (Ulangan)</option>
-                    </select>
+            <div class="rating-container">
+                <label>📖 Markah Fasohah</label>
+                <div class="button-group">
+                    <input type="radio" id="f1" name="fasohah" value="1"><label for="f1">1</label>
+                    <input type="radio" id="f2" name="fasohah" value="2"><label for="f2">2</label>
+                    <input type="radio" id="f3" name="fasohah" value="3"><label for="f3">3</label>
+                    <input type="radio" id="f4" name="fasohah" value="4"><label for="f4">4</label>
+                    <input type="radio" id="f5" name="fasohah" value="5"><label for="f5">5</label>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="glass-card">
-            <label>📖 Muka Surat (Pilih):</label>
-            <div id="muka-surat-grid" class="number-grid">
-                </div>
-            <input type="hidden" id="muka-surat-input">
-
-            <label style="margin-top: 15px;">🔢 Ayat (Pilih):</label>
-            <div id="ayat-grid" class="number-grid">
-                </div>
-            <input type="hidden" id="ayat-input">
-        </section>
-
-        <div id="silibus-display" class="tasmik-grid"></div>
-
-        <footer class="status-sync" id="sync-status">
-            ✨ Sistem Sedia. Data akan disinkron ke Cloud & Telegram.
-        </footer>
+        <button class="btn-check">Hantar Data Tasmik</button>
     </div>
+</div>
 
-    <script src="script.js"></script>
-    
-    <script>
-        // Logik Status Rangkaian (Network Status)
-        window.addEventListener('online', () => {
-            document.getElementById('offline-badge').style.display = 'none';
-            const status = document.getElementById('sync-status');
-            status.innerHTML = "✅ Internet disambung. Menghantar data tertunggak...";
-            status.style.color = "#4ade80";
+<script>
+    // Contoh logic mudah untuk toggle butang grid
+    document.querySelectorAll('.num-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
         });
+    });
+</script>
 
-        window.addEventListener('offline', () => {
-            document.getElementById('offline-badge').style.display = 'inline-block';
-            const status = document.getElementById('sync-status');
-            status.innerHTML = "☁️ Mod Offline: Rekod disimpan dalam memori telefon.";
-            status.style.color = "#fbbf24";
-        });
-    </script>
 </body>
 </html>
