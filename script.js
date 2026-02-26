@@ -25,21 +25,21 @@ const silibusData = {
         { nama: "An-Naas", ayat: 6, ms: 604 }, { nama: "Al-Falaq", ayat: 5, ms: 604 },
         { nama: "Al-Ikhlas", ayat: 4, ms: 604 }, { nama: "Al-Masad", ayat: 5, ms: 603 },
         { nama: "An-Nasr", ayat: 3, ms: 603 }, { nama: "Al-Kafirun", ayat: 6, ms: 603 },
-        { nama: "Al-Kauthar", ayat: 3, ms: 602 }, { nama: "Al-Ma'uun", ayat: 7, ms: 602 },
+        { nama: "Al-Kauthar", ayat: 3, ms: 602 }, { nama: "Al-Ma\u0027uun", ayat: 7, ms: 602 },
         { nama: "Quraisy", ayat: 4, ms: 602 }, { nama: "Al-Fil", ayat: 5, ms: 601 },
-        { nama: "Al-Humazah", ayat: 9, ms: 601 }, { nama: "Al-'Asr", ayat: 3, ms: 601 }
+        { nama: "Al-Humazah", ayat: 9, ms: 601 }, { nama: "Al-\u0027Asr", ayat: 3, ms: 601 }
     ],
     "2": [
-        { nama: "At-Takathur", ayat: 8, ms: 600 }, { nama: "Al-Qori'ah", ayat: 11, ms: 600 },
-        { nama: "Al-'Aadiyaat", ayat: 11, ms: 599 }, { nama: "Az-Zalzalah", ayat: 8, ms: 599 },
+        { nama: "At-Takathur", ayat: 8, ms: 600 }, { nama: "Al-Qori\u0027ah", ayat: 11, ms: 600 },
+        { nama: "Al-\u0027Aadiyaat", ayat: 11, ms: 599 }, { nama: "Az-Zalzalah", ayat: 8, ms: 599 },
         { nama: "Al-Bayyinah", ayat: 8, ms: 598 }, { nama: "Al-Qadr", ayat: 5, ms: 598 },
-        { nama: "Al-'Alaq", ayat: 19, ms: 597 }, { nama: "At-Tin", ayat: 8, ms: 597 },
+        { nama: "Al-\u0027Alaq", ayat: 19, ms: 597 }, { nama: "At-Tin", ayat: 8, ms: 597 },
         { nama: "Asy-Syarh", ayat: 8, ms: 596 }, { nama: "Adh-Dhuha", ayat: 11, ms: 596 }
     ],
     "3": [
         { nama: "Asy-Syams", ayat: 15, ms: 595 }, { nama: "Al-Lail", ayat: 21, ms: 595 },
         { nama: "Al-Balad", ayat: 20, ms: 594 }, { nama: "Al-Ghaasyiah", ayat: 26, ms: 592 },
-        { nama: "Al-A'laa", ayat: 19, ms: 591 }, { nama: "At-Tariq", ayat: 17, ms: 591 },
+        { nama: "Al-A\u0027laa", ayat: 19, ms: 591 }, { nama: "At-Tariq", ayat: 17, ms: 591 },
         { nama: "Al-Infithor", ayat: 19, ms: 587 }
     ],
     "4": [
@@ -48,18 +48,22 @@ const silibusData = {
     ],
     "5": [
         { nama: "Al-Muthoffifin", ayat: 36, ms: 587 }, { nama: "Al-Fajr", ayat: 30, ms: 593 },
-        { nama: "An-Nazi'aat", ayat: 46, ms: 583 }, { nama: "An-Naba'", ayat: 40, ms: 582 }
+        { nama: "An-Nazi\u0027aat", ayat: 46, ms: 583 }, { nama: "An-Naba\u0027", ayat: 40, ms: 582 }
     ],
     "6": [
         { nama: "As-Sajadah", ayat: 30, ms: 415 }, { nama: "Al-Mulk", ayat: 30, ms: 562 },
         { nama: "Al-Insaan", ayat: 31, ms: 578 }, { nama: "Ar-Rahmaan", ayat: 78, ms: 531 },
-        { nama: "Al-Waqi'ah", ayat: 96, ms: 534 }, { nama: "Yaasin", ayat: 83, ms: 440 },
+        { nama: "Al-Waqi\u0027ah", ayat: 96, ms: 534 }, { nama: "Yaasin", ayat: 83, ms: 440 },
         { nama: "Ad-Dukhaan", ayat: 59, ms: 496 }, { nama: "Al-Hasyr", ayat: 24, ms: 545 },
-        { nama: "Al-Jumu'ah", ayat: 11, ms: 553 }, { nama: "Al-Kahfi", ayat: 110, ms: 293 }
+        { nama: "Al-Jumu\u0027ah", ayat: 11, ms: 553 }, { nama: "Al-Kahfi", ayat: 110, ms: 293 }
     ],
     "7": [
-        { nama: "Muraja'ah T1", ayat: 1, ms: 601 }, 
-        { nama: "Muraja'ah T2", ayat: 1, ms: 596 }, 
+        { nama: "Muraja\u0027ah Tahap 1", ayat: 1, ms: 601 },
+        { nama: "Muraja\u0027ah Tahap 2", ayat: 1, ms: 596 },
+        { nama: "Muraja\u0027ah Tahap 3", ayat: 1, ms: 587 },
+        { nama: "Muraja\u0027ah Tahap 4", ayat: 1, ms: 585 },
+        { nama: "Muraja\u0027ah Tahap 5", ayat: 1, ms: 582 },
+        { nama: "Muraja\u0027ah Tahap 6", ayat: 1, ms: 1 },
         { nama: "Input Manual", ayat: 1, ms: 1 }
     ]
 };
@@ -82,27 +86,37 @@ function populatePeserta() {
     ).join('');
 }
 
-// --- RENDER SILIBUS (MEMBAIKI MASALAH TANDA CALIT/APOSTROPHE) ---
+// ==========================================
+// 3. LOGIK RENDER (VERSI BASE64 STABIL)
+// ==========================================
 function renderSilibus() {
     const tahap = document.getElementById('tahap-select').value;
     const surahGrid = document.getElementById('silibus-display'); 
     const data = silibusData[tahap] || [];
 
     surahGrid.innerHTML = data.map((s, index) => {
-        // Gantikan tanda ' dengan \\' supaya JSON tidak ralat dalam HTML onclick
-        const safeSurah = JSON.stringify(s).replace(/'/g, "\\'");
+        // Enkod ke Base64 supaya simbol ' tidak merosakkan HTML onclick
+        const base64Data = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
         
         return `
             <div class="num-btn" 
                  style="font-size:0.75rem; padding:12px 5px;" 
-                 onclick='pilihSurah(${safeSurah}, this)'>
+                 onclick="decodeDanPilih('${base64Data}', this)">
                 ${s.nama}
             </div>
         `;
     }).join('');
 }
 
-// --- LOGIC AUTO-DETECT (PICKER) ---
+function decodeDanPilih(encodedData, elemen) {
+    const decodedString = decodeURIComponent(escape(atob(encodedData)));
+    const surahObj = JSON.parse(decodedString);
+    pilihSurah(surahObj, elemen);
+}
+
+// ==========================================
+// 4. LOGIK PEMILIHAN & AUTO-DETECT
+// ==========================================
 function pilihSurah(surahObj, elemen) {
     const parent = elemen.parentElement;
     parent.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
@@ -117,6 +131,7 @@ function pilihSurah(surahObj, elemen) {
     mulaSelect.innerHTML = '';
     akhirSelect.innerHTML = '';
 
+    // Julat ayat (Tahap 7 / Manual diberi 150 secara default)
     let julatAyat = (surahObj.ayat > 1) ? surahObj.ayat : 150;
 
     for (let i = 1; i <= julatAyat; i++) {
@@ -124,11 +139,11 @@ function pilihSurah(surahObj, elemen) {
         akhirSelect.add(new Option(i, i));
     }
 
-    akhirSelect.value = surahObj.ayat;
+    akhirSelect.value = (surahObj.ayat > 1) ? surahObj.ayat : 1;
 }
 
 // ==========================================
-// 3. FUNGSI HANTAR DATA
+// 5. FUNGSI HANTAR DATA & SYNC
 // ==========================================
 async function hantarRekod() {
     const namaPeserta = document.getElementById('nama-select').value;
@@ -140,8 +155,8 @@ async function hantarRekod() {
     const ayatAkhir = document.getElementById('ayat-akhir-select').value;
 
     if (!surahTerpilih) return alert("Sila pilih Surah!");
-    if (!msPilihan) return alert("Sila pastikan Muka Surat diisi!");
-    if (!tajwidVal || !fasohahVal) return alert("Sila berikan markah Tajwid & Fasohah!");
+    if (!msPilihan) return alert("Sila isi Muka Surat!");
+    if (!tajwidVal || !fasohahVal) return alert("Sila beri markah!");
 
     const payload = {
         ustaz: pembimbingInfo.nama,
@@ -161,7 +176,7 @@ async function hantarRekod() {
     queue.push(payload);
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert(`Alhamdulillah! Rekod ${surahTerpilih} disimpan.`);
+    alert(`Rekod ${surahTerpilih} disimpan secara offline.`);
     
     if (navigator.onLine) await syncNow();
 }
@@ -171,7 +186,7 @@ async function syncNow() {
     if (queue.length === 0) return;
 
     const statusText = document.getElementById('sync-status');
-    statusText.innerText = "Sedang menghantar data...";
+    if(statusText) statusText.innerText = "Sedang menghantar data...";
 
     for (let i = 0; i < queue.length; i++) {
         try {
@@ -182,10 +197,10 @@ async function syncNow() {
             });
         } catch (e) { 
             console.error("Sync error:", e);
-            statusText.innerText = "Gagal menghantar. Data disimpan dalam telefon.";
+            if(statusText) statusText.innerText = "Gagal hantar. Data selamat dalam storage.";
             return;
         }
     }
     localStorage.removeItem('tasmik_queue');
-    statusText.innerText = "Semua data telah disinkronkan ke Google Sheets.";
+    if(statusText) statusText.innerText = "Semua data telah berjaya dihantar!";
 }
