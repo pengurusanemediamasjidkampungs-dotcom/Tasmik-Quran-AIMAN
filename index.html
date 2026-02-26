@@ -67,19 +67,16 @@
         }
         
         .logo-masjid {
-            width: 110px;           /* Saiz ikon lebih mantap */
+            width: 110px;
             height: 110px;
-            border-radius: 50%;     /* Membuat bentuk bulat sempurna */
+            border-radius: 50%;
             object-fit: cover;
             border: 2px solid #00d2ff;
-            background: #000;       /* Latar belakang jika imej transparent */
-            
-            /* Kesan Glowing Neon Luar & Dalam */
+            background: #000;
             box-shadow: 
                 0 0 15px rgba(0, 210, 255, 0.7), 
                 0 0 30px rgba(0, 210, 255, 0.4),
                 inset 0 0 15px rgba(0, 210, 255, 0.2);
-            
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -87,7 +84,6 @@
             transform: scale(1.1);
             box-shadow: 0 0 40px #00d2ff;
         }
-        /* ------------------------------------------- */
     </style>
 </head>
 <body>
@@ -110,8 +106,7 @@
             <div style="display: flex; flex-direction: column; gap: 15px;">
                 <div>
                     <label for="nama-select">Nama Pelajar (Ikut Umur):</label>
-                    <select id="nama-select">
-                        </select>
+                    <select id="nama-select"></select>
                 </div>
 
                 <div>
@@ -129,8 +124,19 @@
             </div>
         </section>
 
-        <div id="silibus-display" class="tasmik-grid">
-            </div>
+        <section class="glass-card">
+            <label>📖 Muka Surat (Pilih):</label>
+            <div id="muka-surat-grid" class="number-grid">
+                </div>
+            <input type="hidden" id="muka-surat-input">
+
+            <label style="margin-top: 15px;">🔢 Ayat (Pilih):</label>
+            <div id="ayat-grid" class="number-grid">
+                </div>
+            <input type="hidden" id="ayat-input">
+        </section>
+
+        <div id="silibus-display" class="tasmik-grid"></div>
 
         <footer class="status-sync" id="sync-status">
             ✨ Sistem Sedia. Data akan disinkron ke Cloud & Telegram.
