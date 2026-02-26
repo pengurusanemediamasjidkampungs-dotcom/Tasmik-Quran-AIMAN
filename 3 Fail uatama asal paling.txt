@@ -1,0 +1,629 @@
+3 Fail uatama asal [paling asas dan standard]
+
+asal [110 lines (94 loc) · 4.34 KB]
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <title>TASMIK 2050 | SMART SYSTEM</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="icon_512.png" alt="Logo" class="logo-masjid">
+        <h1>TASMIK<span>2050</span></h1>
+        <p id="offline-badge" style="color: var(--accent); font-size: 0.6rem; font-weight: 800; text-transform: uppercase;">System Ready • Auto-Sync</p>
+    </header>
+
+    <div class="glass-card">
+        <label for="nama-select">Nama Pelajar</label>
+        <select id="nama-select">
+        </select>
+
+        <label for="tahap-select">Pilih Tahap Silibus</label>
+        <select id="tahap-select" onchange="renderSilibus()">
+            <option value="1">Tahap 1: Surah Pendek</option>
+            <option value="2">Tahap 2: Pertengahan 1</option>
+            <option value="3">Tahap 3: Pertengahan 2</option>
+            <option value="4">Tahap 4: Lanjutan 1</option>
+            <option value="5">Tahap 5: Lanjutan 2</option>
+            <option value="6">Tahap 6: Pilihan/Sajadah</option>
+            <option value="7">Tahap 7: Muraja'ah/Lain-lain</option>
+        </select>
+
+        <label>Pilih Surah</label>
+        <div id="silibus-display" class="number-grid">
+        </div>
+
+        <label>Maklumat Bacaan (Auto-Detect)</label>
+        <div class="compact-picker-row">
+            <div class="picker-box">
+                <span class="picker-label">M/S</span>
+                <input type="number" id="muka-surat-input" value="1" min="1" max="604">
+            </div>
+
+            <div class="picker-box">
+                <span class="picker-label">AYAT MULA</span>
+                <select id="ayat-mula-select">
+                    <option value="1">1</option>
+                </select>
+            </div>
+
+            <div class="picker-box">
+                <span class="picker-label">AYAT AKHIR</span>
+                <select id="ayat-akhir-select">
+                    <option value="1">1</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="rating-section" style="margin-top: 20px;">
+            <div class="rating-container">
+                <label>⭐ Markah Tajwid</label>
+                <div class="button-group">
+                    <input type="radio" id="t1" name="tajwid" value="1"><label for="t1">1</label>
+                    <input type="radio" id="t2" name="tajwid" value="2"><label for="t2">2</label>
+                    <input type="radio" id="t3" name="tajwid" value="3"><label for="t3">3</label>
+                    <input type="radio" id="t4" name="tajwid" value="4"><label for="t4">4</label>
+                    <input type="radio" id="t5" name="tajwid" value="5" checked><label for="t5">5</label>
+                </div>
+            </div>
+
+            <div class="rating-container">
+                <label>📖 Markah Fasohah</label>
+                <div class="button-group">
+                    <input type="radio" id="f1" name="fasohah" value="1"><label for="f1">1</label>
+                    <input type="radio" id="f2" name="fasohah" value="2"><label for="f2">2</label>
+                    <input type="radio" id="f3" name="fasohah" value="3"><label for="f3">3</label>
+                    <input type="radio" id="f4" name="fasohah" value="4"><label for="f4">4</label>
+                    <input type="radio" id="f5" name="fasohah" value="5" checked><label for="f5">5</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-check" onclick="hantarRekod()">Hantar Data Tasmik</button>
+        
+        <center>
+            <p class="status-sync" id="sync-status">Semua data telah disinkronkan.</p>
+        </center>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('PWA: Service Worker Berjaya Didaftar!', reg))
+        .catch(err => console.log('PWA: Service Worker Gagal!', err));
+    });
+  }
+</script>
+
+</body>
+</html>
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+style.css
+ asal [313 lines (278 loc) · 7.05 KB]
+
+
+/* TASMIK SMART SYSTEM 2050 - ULTIMATE STYLE
+   Vibe: Solid, Futuristic, Glassmorphism
+   Anti-Search & Anti-Hold Update
+*/
+
+:root {
+    --primary: #00d2ff;
+    --secondary: #0081a7;
+    --accent: #4ade80;
+    --warning: #fbbf24;
+    --bg-dark: #0f172a;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: #f8fafc;
+    --text-dim: #94a3b8;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --glow: 0 0 20px rgba(0, 210, 255, 0.6);
+}
+
+/* RESET, SMOOTH SCROLLING & GLOBAL LOCK */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    
+    /* Elakkan pemilihan teks global & tap highlight */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+html, body {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(74, 222, 128, 0.05) 0%, transparent 20%),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: env(safe-area-inset-top) 20px 40px 20px;
+    display: flex;
+    justify-content: center;
+    
+    /* Elakkan bounce & zoom */
+    touch-action: pan-y; 
+    overscroll-behavior-y: contain;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* KECUALIKAN INPUT DARIPADA LOCK (Sebab perlu taip/pilih nombor) */
+input, textarea, select {
+    -webkit-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    font-size: 16px !important; /* Elakkan auto-zoom iPhone */
+}
+
+/* HEADER SECTION */
+header {
+    text-align: center;
+    padding: 40px 0 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-masjid {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--primary); 
+    background: #000;
+    box-shadow: 0 0 15px var(--primary), 0 0 30px rgba(0, 210, 255, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    -webkit-user-drag: none;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    letter-spacing: 4px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+header h1 span {
+    color: var(--primary);
+    text-shadow: var(--glow);
+}
+
+/* CARDS & GLASS EFFECT */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+/* FORM ELEMENTS */
+label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+select, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* --- COMPACT PICKER --- */
+.compact-picker-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.picker-box {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.picker-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.picker-box select, .picker-box input {
+    width: 100%;
+    background: transparent !important;
+    border: none !important;
+    color: var(--primary) !important;
+    font-size: 1.2rem !important;
+    font-weight: 800;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Buang spinner */
+.picker-box input::-webkit-outer-spin-button,
+.picker-box input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* --- PEMARKAHAN 1-5 --- */
+.rating-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 10px 0 20px 0;
+}
+
+.rating-container {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 18px;
+    border: 1px solid var(--glass-border);
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.button-group input[type="radio"] {
+    display: none;
+}
+
+.button-group label {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--text-dim);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.button-group input[type="radio"]:checked + label {
+    background: var(--primary);
+    color: var(--bg-dark);
+    border-color: var(--primary);
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+}
+
+.button-group input[type="radio"][value="5"]:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+}
+
+/* --- GRID SURAH --- */
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--glass-border);
+    margin-bottom: 10px;
+    touch-action: pan-y;
+}
+
+.num-btn {
+    padding: 12px 0;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    /* Anti-drag */
+    -webkit-user-drag: none;
+}
+
+.num-btn.active {
+    background: var(--primary);
+    color: #000;
+    box-shadow: var(--glow);
+    border-color: var(--primary);
+}
+
+/* Custom Scrollbar */
+.number-grid::-webkit-scrollbar { width: 4px; }
+.number-grid::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+/* BUTTONS */
+.btn-check, .btn-hantar {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 18px;
+    font-weight: 800;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+    -webkit-user-drag: none;
+}
+
+.btn-check:active { transform: scale(0.98); }
+
+/* STATUS & BADGES */
+#offline-badge { animation: pulse 2s infinite; }
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+#sync-status {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 10px;
+    text-align: center;
+}
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+script.js
+ asal [191 lines (171 loc) · 7.85 KB]
+
+// ==========================================
+// 1. DATA PESERTA & KONFIGURASI
+// ==========================================
+const dataPeserta = [
+    { nama: "NUR SYAURAH BINTI ESRIFADLI", umur: 13 },
+    { nama: "NUR DHIA HUSNA BINTI HAMIZAN", umur: 13 },
+    { nama: "NUR DAMIA HUMAIRA BINTI MD KHAIRUL AZHAR", umur: 12 },
+    { nama: "NUR ALYA FATINI BINTI MOHAMAD SSIBAH", umur: 11 },
+    { nama: "ZAHIYYATUL HUSNA BINTI NORIZAM", umur: 10 },
+    { nama: "NUR AESHA HUMAIRA BINTI MUHAMMAD AZFAR", umur: 9 },
+    { nama: "ADAWIYAH HUMAIRA BINTI SHAHRIN", umur: 9 },
+    { nama: "HIDAYATUL ZAHIROH BINTI NORIZAM", umur: 9 },
+    { nama: "NUR DIYANA HUWAINAA BINTI MD KHAIRUL AZHAR", umur: 8 }
+];
+
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw5tyY3rrQFkGisxuE-pAc-Ii2Z4G2GYyUyvS6NeTSlrpKhlQ4aFEaWC-5ujnXCa9u1Ag/exec";
+
+const pembimbingInfo = {
+    nama: "MUHAMMAD AIMAN BIN MOHD RAFEE",
+    jantina: "PEREMPUAN"
+};
+
+const silibusData = {
+    "1": [
+        { nama: "An-Naas", ayat: 6, ms: 604 }, { nama: "Al-Falaq", ayat: 5, ms: 604 },
+        { nama: "Al-Ikhlas", ayat: 4, ms: 604 }, { nama: "Al-Masad", ayat: 5, ms: 603 },
+        { nama: "An-Nasr", ayat: 3, ms: 603 }, { nama: "Al-Kafirun", ayat: 6, ms: 603 },
+        { nama: "Al-Kauthar", ayat: 3, ms: 602 }, { nama: "Al-Ma\u0027uun", ayat: 7, ms: 602 },
+        { nama: "Quraisy", ayat: 4, ms: 602 }, { nama: "Al-Fil", ayat: 5, ms: 601 },
+        { nama: "Al-Humazah", ayat: 9, ms: 601 }, { nama: "Al-\u0027Asr", ayat: 3, ms: 601 }
+    ],
+    "2": [
+        { nama: "At-Takathur", ayat: 8, ms: 600 }, { nama: "Al-Qori\u0027ah", ayat: 11, ms: 600 },
+        { nama: "Al-\u0027Aadiyaat", ayat: 11, ms: 599 }, { nama: "Az-Zalzalah", ayat: 8, ms: 599 },
+        { nama: "Al-Bayyinah", ayat: 8, ms: 598 }, { nama: "Al-Qadr", ayat: 5, ms: 598 },
+        { nama: "Al-\u0027Alaq", ayat: 19, ms: 597 }, { nama: "At-Tin", ayat: 8, ms: 597 },
+        { nama: "Asy-Syarh", ayat: 8, ms: 596 }, { nama: "Adh-Dhuha", ayat: 11, ms: 596 }
+    ],
+    "3": [
+        { nama: "Asy-Syams", ayat: 15, ms: 595 }, { nama: "Al-Lail", ayat: 21, ms: 595 },
+        { nama: "Al-Balad", ayat: 20, ms: 594 }, { nama: "Al-Ghaasyiah", ayat: 26, ms: 592 },
+        { nama: "Al-A\u0027laa", ayat: 19, ms: 591 }, { nama: "At-Tariq", ayat: 17, ms: 591 },
+        { nama: "Al-Infithor", ayat: 19, ms: 587 }
+    ],
+    "4": [
+        { nama: "Al-Buruj", ayat: 22, ms: 590 }, { nama: "Al-Insyiqaq", ayat: 25, ms: 589 },
+        { nama: "At-Takwir", ayat: 29, ms: 586 }, { nama: "Abasa", ayat: 42, ms: 585 }
+    ],
+    "5": [
+        { nama: "Al-Muthoffifin", ayat: 36, ms: 587 }, { nama: "Al-Fajr", ayat: 30, ms: 593 },
+        { nama: "An-Nazi\u0027aat", ayat: 46, ms: 583 }, { nama: "An-Naba\u0027", ayat: 40, ms: 582 }
+    ],
+    "6": [
+        { nama: "As-Sajadah", ayat: 30, ms: 415 }, { nama: "Al-Mulk", ayat: 30, ms: 562 },
+        { nama: "Al-Insaan", ayat: 31, ms: 578 }, { nama: "Ar-Rahmaan", ayat: 78, ms: 531 },
+        { nama: "Al-Waqi\u0027ah", ayat: 96, ms: 534 }, { nama: "Yaasin", ayat: 83, ms: 440 },
+        { nama: "Ad-Dukhaan", ayat: 59, ms: 496 }, { nama: "Al-Hasyr", ayat: 24, ms: 545 },
+        { nama: "Al-Jumu\u0027ah", ayat: 11, ms: 553 }, { nama: "Al-Kahfi", ayat: 110, ms: 293 }
+    ],
+    "7": [
+        { nama: "Muraja\u0027ah Tahap 1", ayat: 1, ms: 601 },
+        { nama: "Muraja\u0027ah Tahap 2", ayat: 1, ms: 596 },
+        { nama: "Muraja\u0027ah Tahap 3", ayat: 1, ms: 587 },
+        { nama: "Muraja\u0027ah Tahap 4", ayat: 1, ms: 585 },
+        { nama: "Muraja\u0027ah Tahap 5", ayat: 1, ms: 582 },
+        { nama: "Muraja\u0027ah Tahap 6", ayat: 1, ms: 1 },
+        { nama: "Input Manual", ayat: 1, ms: 1 }
+    ]
+};
+
+let surahTerpilih = "";
+
+window.onload = () => {
+    populatePeserta();
+    renderSilibus(); 
+};
+
+function populatePeserta() {
+    const select = document.getElementById('nama-select');
+    if(!select) return;
+    const sorted = [...dataPeserta].sort((a, b) => a.umur - b.umur); 
+    select.innerHTML = sorted.map(p => 
+        `<option value="${p.nama}">${p.nama} (${p.umur} Thn)</option>`
+    ).join('');
+}
+
+// LOGIK RENDER BASE64 (MENGATASI RALAT TANDA CALIT)
+function renderSilibus() {
+    const tahap = document.getElementById('tahap-select').value;
+    const surahGrid = document.getElementById('silibus-display'); 
+    if(!surahGrid) return;
+    const data = silibusData[tahap] || [];
+
+    surahGrid.innerHTML = data.map((s) => {
+        const safeData = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+        return `
+            <div class="num-btn" 
+                 style="font-size:0.75rem; padding:12px 5px;" 
+                 onclick="decodeKlik('${safeData}', this)">
+                ${s.nama}
+            </div>
+        `;
+    }).join('');
+}
+
+function decodeKlik(encodedData, elemen) {
+    const decodedString = decodeURIComponent(escape(atob(encodedData)));
+    const surahObj = JSON.parse(decodedString);
+    pilihSurah(surahObj, elemen);
+}
+
+function pilihSurah(surahObj, elemen) {
+    const parent = elemen.parentElement;
+    parent.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
+    elemen.classList.add('active');
+    
+    surahTerpilih = surahObj.nama;
+    const msInput = document.getElementById('muka-surat-input');
+    if(msInput) msInput.value = surahObj.ms;
+
+    const mulaSelect = document.getElementById('ayat-mula-select');
+    const akhirSelect = document.getElementById('ayat-akhir-select');
+    
+    if(mulaSelect && akhirSelect) {
+        mulaSelect.innerHTML = '';
+        akhirSelect.innerHTML = '';
+        let julatAyat = (surahObj.ayat > 1) ? surahObj.ayat : 150;
+        for (let i = 1; i <= julatAyat; i++) {
+            mulaSelect.add(new Option(i, i));
+            akhirSelect.add(new Option(i, i));
+        }
+        akhirSelect.value = (surahObj.ayat > 1) ? surahObj.ayat : 1;
+    }
+}
+
+async function hantarRekod() {
+    const namaPeserta = document.getElementById('nama-select').value;
+    const tahap = document.getElementById('tahap-select').value;
+    const tajwidVal = document.querySelector('input[name="tajwid"]:checked')?.value;
+    const fasohahVal = document.querySelector('input[name="fasohah"]:checked')?.value;
+    const msPilihan = document.getElementById('muka-surat-input').value;
+    const ayatMula = document.getElementById('ayat-mula-select').value;
+    const ayatAkhir = document.getElementById('ayat-akhir-select').value;
+
+    if (!surahTerpilih) return alert("Sila pilih Surah!");
+    if (!msPilihan) return alert("Sila isi Muka Surat!");
+    if (!tajwidVal || !fasohahVal) return alert("Sila beri markah!");
+
+    const payload = {
+        ustaz: pembimbingInfo.nama,
+        peserta: namaPeserta,
+        jantina: pembimbingInfo.jantina,
+        jenis_bacaan: (tahap === "7") ? "Muraja'ah" : "Tasmik",
+        tahap: "TAHAP " + tahap,
+        surah: surahTerpilih,
+        mukasurat: msPilihan,
+        ayat_range: `${ayatMula}-${ayatAkhir}`,
+        tajwid: tajwidVal,
+        fasohah: fasohahVal,
+        ulasan: "Rekod Tasmik Smart 2050"
+    };
+
+    let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
+    queue.push(payload);
+    localStorage.setItem('tasmik_queue', JSON.stringify(queue));
+
+    alert(`Rekod ${surahTerpilih} disimpan!`);
+    if (navigator.onLine) await syncNow();
+}
+
+async function syncNow() {
+    let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
+    if (queue.length === 0) return;
+    const statusText = document.getElementById('sync-status');
+    if(statusText) statusText.innerText = "⏳ Menghantar data...";
+
+    for (let i = 0; i < queue.length; i++) {
+        try {
+            await fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(queue[i])
+            });
+        } catch (e) { 
+            if(statusText) statusText.innerText = "❌ Gagal hantar.";
+            return;
+        }
+    }
+    localStorage.removeItem('tasmik_queue');
+    if(statusText) statusText.innerText = "✅ Semua data telah dihantar!";
+}
