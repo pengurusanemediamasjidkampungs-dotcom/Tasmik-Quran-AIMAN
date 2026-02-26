@@ -68,9 +68,6 @@ const silibusData = {
     ]
 };
 
-// ==========================================
-// 2. INITIALIZATION
-// ==========================================
 let surahTerpilih = "";
 
 window.onload = () => {
@@ -87,74 +84,55 @@ function populatePeserta() {
     ).join('');
 }
 
-// ==========================================
-// 3. RENDER SILIBUS (VERSI ANTI-ERROR)
-// ==========================================
+// LOGIK RENDER BASE64 (MENGATASI RALAT TANDA CALIT)
 function renderSilibus() {
     const tahap = document.getElementById('tahap-select').value;
     const surahGrid = document.getElementById('silibus-display'); 
+    if(!surahGrid) return;
     const data = silibusData[tahap] || [];
 
-    surahGrid.innerHTML = data.map((s, index) => {
-        // Enkod data surah ke Base64 supaya simbol ' tidak merosakkan HTML
+    surahGrid.innerHTML = data.map((s) => {
         const safeData = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
-        
         return `
             <div class="num-btn" 
                  style="font-size:0.75rem; padding:12px 5px;" 
-                 onclick="prosesKlikSurah('${safeData}', this)">
+                 onclick="decodeKlik('${safeData}', this)">
                 ${s.nama}
             </div>
         `;
     }).join('');
 }
 
-// Fungsi perantara untuk decode data Base64
-function prosesKlikSurah(encodedData, elemen) {
+function decodeKlik(encodedData, elemen) {
     const decodedString = decodeURIComponent(escape(atob(encodedData)));
     const surahObj = JSON.parse(decodedString);
     pilihSurah(surahObj, elemen);
 }
 
-// ==========================================
-// 4. LOGIK PEMILIHAN & UI
-// ==========================================
 function pilihSurah(surahObj, elemen) {
-    // Highlight butang
     const parent = elemen.parentElement;
     parent.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
     elemen.classList.add('active');
     
     surahTerpilih = surahObj.nama;
-
-    // Set Muka Surat
     const msInput = document.getElementById('muka-surat-input');
     if(msInput) msInput.value = surahObj.ms;
 
-    // Generate Ayat Selectors
     const mulaSelect = document.getElementById('ayat-mula-select');
     const akhirSelect = document.getElementById('ayat-akhir-select');
     
     if(mulaSelect && akhirSelect) {
         mulaSelect.innerHTML = '';
         akhirSelect.innerHTML = '';
-
-        // Jika Tahap 7 atau surah tiada data ayat, bagi limit 150
         let julatAyat = (surahObj.ayat > 1) ? surahObj.ayat : 150;
-
         for (let i = 1; i <= julatAyat; i++) {
             mulaSelect.add(new Option(i, i));
             akhirSelect.add(new Option(i, i));
         }
-
-        // Set Default Ayat Akhir
         akhirSelect.value = (surahObj.ayat > 1) ? surahObj.ayat : 1;
     }
 }
 
-// ==========================================
-// 5. HANTAR DATA & SYNC
-// ==========================================
 async function hantarRekod() {
     const namaPeserta = document.getElementById('nama-select').value;
     const tahap = document.getElementById('tahap-select').value;
@@ -186,17 +164,15 @@ async function hantarRekod() {
     queue.push(payload);
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert(`Alhamdulillah! Rekod ${surahTerpilih} disimpan.`);
-    
+    alert(`Rekod ${surahTerpilih} disimpan!`);
     if (navigator.onLine) await syncNow();
 }
 
 async function syncNow() {
     let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
     if (queue.length === 0) return;
-
     const statusText = document.getElementById('sync-status');
-    if(statusText) statusText.innerText = "⏳ Sedang menghantar data...";
+    if(statusText) statusText.innerText = "⏳ Menghantar data...";
 
     for (let i = 0; i < queue.length; i++) {
         try {
@@ -206,8 +182,7 @@ async function syncNow() {
                 body: JSON.stringify(queue[i])
             });
         } catch (e) { 
-            console.error("Sync error:", e);
-            if(statusText) statusText.innerText = "❌ Gagal hantar. Data disimpan offline.";
+            if(statusText) statusText.innerText = "❌ Gagal hantar.";
             return;
         }
     }
