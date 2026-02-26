@@ -249,3 +249,50 @@ select:focus, input:focus {
     margin-bottom: 8px;
     display: inline-block;
 }
+
+/* --- KEMASKINI GRID NOMBOR (PICKER) --- */
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 nombor sebaris */
+    gap: 8px;
+    max-height: 200px; /* Had ketinggian supaya skrin tak terlalu panjang */
+    overflow-y: auto; /* Tatal dalam grid sahaja */
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    margin-bottom: 10px;
+}
+
+/* Custom Scrollbar untuk Grid Nombor */
+.number-grid::-webkit-scrollbar {
+    width: 5px;
+}
+.number-grid::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.num-btn {
+    padding: 12px 0;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.num-btn:active {
+    transform: scale(0.9);
+}
+
+.num-btn.active {
+    background: var(--primary);
+    color: #000;
+    box-shadow: var(--glow);
+    border-color: var(--primary);
+}
