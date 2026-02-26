@@ -13,7 +13,7 @@
     --text-main: #f8fafc;
     --text-dim: #94a3b8;
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-    --glow: 0 0 20px rgba(0, 210, 255, 0.6); /* Cahaya lebih kuat untuk logo */
+    --glow: 0 0 20px rgba(0, 210, 255, 0.6);
 }
 
 /* RESET & SMOOTH SCROLLING */
@@ -43,36 +43,25 @@ body {
     max-width: 500px;
 }
 
-/* HEADER SECTION & LOGO BULAT */
+/* HEADER SECTION */
 header {
     text-align: center;
     padding: 40px 0 20px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; /* Jarak antara logo dan teks */
+    gap: 15px;
 }
 
 .logo-masjid {
-    width: 100px;           /* Saiz ikon yang seimbang */
+    width: 100px;
     height: 100px;
-    object-fit: cover;      /* Gambar tidak penyek */
-    border-radius: 50%;     /* Bulat Sempurna */
+    object-fit: cover;
+    border-radius: 50%;
     border: 2px solid var(--primary); 
-    background: #000;       /* Latar belakang untuk logo telus */
-    
-    /* Kesan Glowing Neon */
-    box-shadow: 
-        0 0 15px var(--primary), 
-        0 0 30px rgba(0, 210, 255, 0.3),
-        inset 0 0 15px rgba(0, 210, 255, 0.2);
-    
+    background: #000;
+    box-shadow: 0 0 15px var(--primary), 0 0 30px rgba(0, 210, 255, 0.3);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.logo-masjid:hover {
-    transform: scale(1.1) rotate(5deg); /* Sedikit putaran bila disentuh */
-    box-shadow: 0 0 40px var(--primary);
 }
 
 header h1 {
@@ -87,13 +76,6 @@ header h1 span {
     text-shadow: var(--glow);
 }
 
-header p {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-top: 8px;
-    letter-spacing: 1px;
-}
-
 /* CARDS & GLASS EFFECT */
 .glass-card {
     background: var(--glass);
@@ -104,21 +86,20 @@ header p {
     padding: 24px;
     margin-bottom: 20px;
     box-shadow: var(--shadow);
-    transition: transform 0.3s ease;
 }
 
 /* FORM ELEMENTS */
 label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-select, input {
+select, input[type="text"] {
     width: 100%;
     padding: 14px;
     background: rgba(0, 0, 0, 0.3);
@@ -126,147 +107,82 @@ select, input {
     border-radius: 14px;
     color: white;
     font-size: 1rem;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     outline: none;
     transition: all 0.3s ease;
 }
 
-select:focus, input:focus {
-    border-color: var(--primary);
-    background: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.1);
-}
-
-/* TASMIK GRID & SURAH CARDS */
-.tasmik-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-.surah-card {
-    border-left: 5px solid var(--primary);
-    position: relative;
-    overflow: hidden;
-}
-
-.surah-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(90deg, rgba(0, 210, 255, 0.05), transparent);
-    pointer-events: none;
-}
-
-.surah-card h3 {
-    font-size: 1.2rem;
-    color: #fff;
-    margin-bottom: 4px;
-}
-
-.surah-card p {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-}
-
-/* SKOR INPUT AREA */
-.skor-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+/* --- PEMARKAHAN 1-5 (NEW & IMPROVED) --- */
+.rating-section {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
-    margin: 18px 0;
-    padding-top: 15px;
-    border-top: 1px solid var(--glass-border);
+    margin: 10px 0 20px 0;
 }
 
-.skor-item label {
-    font-size: 0.7rem;
-    color: var(--text-dim);
+.rating-container {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 18px;
+    border: 1px solid var(--glass-border);
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.button-group input[type="radio"] {
+    display: none;
+}
+
+.button-group label {
+    flex: 1;
+    padding: 12px 0;
     text-align: center;
-}
-
-.skor-item input {
-    margin-bottom: 0;
-    text-align: center;
-    font-size: 1.4rem;
-    color: var(--accent);
-    font-weight: 800;
-    background: rgba(74, 222, 128, 0.05);
-}
-
-/* BUTTONS */
-.btn-check {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 16px;
-    font-weight: 800;
-    width: 100%;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    font-weight: 800;
+    color: var(--text-dim);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 1.1rem;
 }
 
-.btn-check:hover {
-    transform: scale(1.02);
-    filter: brightness(1.1);
+.button-group input[type="radio"]:checked + label {
+    background: var(--primary);
+    color: var(--bg-dark);
+    border-color: var(--primary);
     box-shadow: var(--glow);
+    transform: translateY(-2px);
 }
 
-.btn-check:active {
-    transform: scale(0.98);
-}
-
-/* STATUS BADGES */
-#offline-badge {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.7; }
-    50% { opacity: 1; }
-    100% { opacity: 0.7; }
-}
-
-.status-sync {
-    margin-top: 30px;
-    opacity: 0.6;
-    font-weight: 500;
-}
-
-/* UTILITIES */
-.tahap-badge {
-    background: rgba(0, 210, 255, 0.1);
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    padding: 4px 12px;
-    border-radius: 10px;
-    font-size: 0.65rem;
-    font-weight: 900;
-    margin-bottom: 8px;
-    display: inline-block;
+/* Warna hijau untuk markah penuh */
+.button-group input[type="radio"][value="5"]:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
 }
 
 /* --- KEMASKINI GRID NOMBOR (PICKER) --- */
 .number-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 nombor sebaris */
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
-    max-height: 200px; /* Had ketinggian supaya skrin tak terlalu panjang */
-    overflow-y: auto; /* Tatal dalam grid sahaja */
+    max-height: 180px;
+    overflow-y: auto;
     background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 14px;
     border: 1px solid var(--glass-border);
     margin-bottom: 10px;
 }
 
-/* Custom Scrollbar untuk Grid Nombor */
+/* Custom Scrollbar */
 .number-grid::-webkit-scrollbar {
-    width: 5px;
+    width: 4px;
 }
 .number-grid::-webkit-scrollbar-thumb {
     background: var(--primary);
@@ -277,7 +193,7 @@ select:focus, input:focus {
     padding: 12px 0;
     background: var(--glass);
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    border-radius: 10px;
     color: white;
     font-weight: bold;
     text-align: center;
@@ -286,13 +202,53 @@ select:focus, input:focus {
     font-size: 0.9rem;
 }
 
-.num-btn:active {
-    transform: scale(0.9);
-}
-
 .num-btn.active {
     background: var(--primary);
     color: #000;
     box-shadow: var(--glow);
     border-color: var(--primary);
+}
+
+/* BUTTONS */
+.btn-check {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 18px;
+    font-weight: 800;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.btn-check:active {
+    transform: scale(0.98);
+}
+
+/* STATUS & BADGES */
+#offline-badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.tahap-badge {
+    background: rgba(0, 210, 255, 0.1);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+    display: inline-block;
 }
