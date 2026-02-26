@@ -80,6 +80,7 @@ window.onload = () => {
 
 function populatePeserta() {
     const select = document.getElementById('nama-select');
+    if(!select) return;
     const sorted = [...dataPeserta].sort((a, b) => a.umur - b.umur); 
     select.innerHTML = sorted.map(p => 
         `<option value="${p.nama}">${p.nama} (${p.umur} Thn)</option>`
@@ -87,7 +88,7 @@ function populatePeserta() {
 }
 
 // ==========================================
-// 3. LOGIK RENDER (VERSI BASE64 STABIL)
+// 3. RENDER SILIBUS (VERSI ANTI-ERROR)
 // ==========================================
 function renderSilibus() {
     const tahap = document.getElementById('tahap-select').value;
@@ -95,55 +96,64 @@ function renderSilibus() {
     const data = silibusData[tahap] || [];
 
     surahGrid.innerHTML = data.map((s, index) => {
-        // Enkod ke Base64 supaya simbol ' tidak merosakkan HTML onclick
-        const base64Data = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+        // Enkod data surah ke Base64 supaya simbol ' tidak merosakkan HTML
+        const safeData = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
         
         return `
             <div class="num-btn" 
                  style="font-size:0.75rem; padding:12px 5px;" 
-                 onclick="decodeDanPilih('${base64Data}', this)">
+                 onclick="prosesKlikSurah('${safeData}', this)">
                 ${s.nama}
             </div>
         `;
     }).join('');
 }
 
-function decodeDanPilih(encodedData, elemen) {
+// Fungsi perantara untuk decode data Base64
+function prosesKlikSurah(encodedData, elemen) {
     const decodedString = decodeURIComponent(escape(atob(encodedData)));
     const surahObj = JSON.parse(decodedString);
     pilihSurah(surahObj, elemen);
 }
 
 // ==========================================
-// 4. LOGIK PEMILIHAN & AUTO-DETECT
+// 4. LOGIK PEMILIHAN & UI
 // ==========================================
 function pilihSurah(surahObj, elemen) {
+    // Highlight butang
     const parent = elemen.parentElement;
     parent.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
     elemen.classList.add('active');
     
     surahTerpilih = surahObj.nama;
-    document.getElementById('muka-surat-input').value = surahObj.ms;
 
+    // Set Muka Surat
+    const msInput = document.getElementById('muka-surat-input');
+    if(msInput) msInput.value = surahObj.ms;
+
+    // Generate Ayat Selectors
     const mulaSelect = document.getElementById('ayat-mula-select');
     const akhirSelect = document.getElementById('ayat-akhir-select');
     
-    mulaSelect.innerHTML = '';
-    akhirSelect.innerHTML = '';
+    if(mulaSelect && akhirSelect) {
+        mulaSelect.innerHTML = '';
+        akhirSelect.innerHTML = '';
 
-    // Julat ayat (Tahap 7 / Manual diberi 150 secara default)
-    let julatAyat = (surahObj.ayat > 1) ? surahObj.ayat : 150;
+        // Jika Tahap 7 atau surah tiada data ayat, bagi limit 150
+        let julatAyat = (surahObj.ayat > 1) ? surahObj.ayat : 150;
 
-    for (let i = 1; i <= julatAyat; i++) {
-        mulaSelect.add(new Option(i, i));
-        akhirSelect.add(new Option(i, i));
+        for (let i = 1; i <= julatAyat; i++) {
+            mulaSelect.add(new Option(i, i));
+            akhirSelect.add(new Option(i, i));
+        }
+
+        // Set Default Ayat Akhir
+        akhirSelect.value = (surahObj.ayat > 1) ? surahObj.ayat : 1;
     }
-
-    akhirSelect.value = (surahObj.ayat > 1) ? surahObj.ayat : 1;
 }
 
 // ==========================================
-// 5. FUNGSI HANTAR DATA & SYNC
+// 5. HANTAR DATA & SYNC
 // ==========================================
 async function hantarRekod() {
     const namaPeserta = document.getElementById('nama-select').value;
@@ -176,7 +186,7 @@ async function hantarRekod() {
     queue.push(payload);
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert(`Rekod ${surahTerpilih} disimpan secara offline.`);
+    alert(`Alhamdulillah! Rekod ${surahTerpilih} disimpan.`);
     
     if (navigator.onLine) await syncNow();
 }
@@ -186,7 +196,7 @@ async function syncNow() {
     if (queue.length === 0) return;
 
     const statusText = document.getElementById('sync-status');
-    if(statusText) statusText.innerText = "Sedang menghantar data...";
+    if(statusText) statusText.innerText = "⏳ Sedang menghantar data...";
 
     for (let i = 0; i < queue.length; i++) {
         try {
@@ -197,10 +207,10 @@ async function syncNow() {
             });
         } catch (e) { 
             console.error("Sync error:", e);
-            if(statusText) statusText.innerText = "Gagal hantar. Data selamat dalam storage.";
+            if(statusText) statusText.innerText = "❌ Gagal hantar. Data disimpan offline.";
             return;
         }
     }
     localStorage.removeItem('tasmik_queue');
-    if(statusText) statusText.innerText = "Semua data telah berjaya dihantar!";
+    if(statusText) statusText.innerText = "✅ Semua data telah dihantar!";
 }
