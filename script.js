@@ -71,7 +71,7 @@ let surahTerpilih = "";
 
 window.onload = () => {
     populatePeserta();
-    renderSilibus(); // Papar tahap 1 secara default
+    renderSilibus(); 
 };
 
 function populatePeserta() {
@@ -82,40 +82,41 @@ function populatePeserta() {
     ).join('');
 }
 
-// --- RENDER SILIBUS (GAYA GRID KEMAS) ---
+// --- RENDER SILIBUS (MEMBAIKI MASALAH TANDA CALIT/APOSTROPHE) ---
 function renderSilibus() {
     const tahap = document.getElementById('tahap-select').value;
     const surahGrid = document.getElementById('silibus-display'); 
     const data = silibusData[tahap] || [];
 
-    surahGrid.innerHTML = data.map(s => `
-        <div class="num-btn" style="font-size:0.75rem; padding:12px 5px;" onclick='pilihSurah(${JSON.stringify(s)}, this)'>
-            ${s.nama}
-        </div>
-    `).join('');
+    surahGrid.innerHTML = data.map((s, index) => {
+        // Gantikan tanda ' dengan \\' supaya JSON tidak ralat dalam HTML onclick
+        const safeSurah = JSON.stringify(s).replace(/'/g, "\\'");
+        
+        return `
+            <div class="num-btn" 
+                 style="font-size:0.75rem; padding:12px 5px;" 
+                 onclick='pilihSurah(${safeSurah}, this)'>
+                ${s.nama}
+            </div>
+        `;
+    }).join('');
 }
 
 // --- LOGIC AUTO-DETECT (PICKER) ---
 function pilihSurah(surahObj, elemen) {
-    // 1. Highlight butang yang dipilih
     const parent = elemen.parentElement;
     parent.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
     elemen.classList.add('active');
     
-    // 2. Simpan nama surah terpilih global
     surahTerpilih = surahObj.nama;
-
-    // 3. AUTO-DETECT Muka Surat
     document.getElementById('muka-surat-input').value = surahObj.ms;
 
-    // 4. GENERATE Ayat Scroller (Mula & Akhir)
     const mulaSelect = document.getElementById('ayat-mula-select');
     const akhirSelect = document.getElementById('ayat-akhir-select');
     
     mulaSelect.innerHTML = '';
     akhirSelect.innerHTML = '';
 
-    // Jika Tahap 7 atau Input Manual, beri julat yang lebih besar secara default
     let julatAyat = (surahObj.ayat > 1) ? surahObj.ayat : 150;
 
     for (let i = 1; i <= julatAyat; i++) {
@@ -123,7 +124,6 @@ function pilihSurah(surahObj, elemen) {
         akhirSelect.add(new Option(i, i));
     }
 
-    // 5. SET DEFAULT: Ayat Akhir = Ayat Terakhir Surah (jika ada data)
     akhirSelect.value = surahObj.ayat;
 }
 
@@ -133,17 +133,12 @@ function pilihSurah(surahObj, elemen) {
 async function hantarRekod() {
     const namaPeserta = document.getElementById('nama-select').value;
     const tahap = document.getElementById('tahap-select').value;
-    
-    // Ambil markah dari Radio Button (1-5)
     const tajwidVal = document.querySelector('input[name="tajwid"]:checked')?.value;
     const fasohahVal = document.querySelector('input[name="fasohah"]:checked')?.value;
-    
-    // Ambil nilai dari Compact Picker
     const msPilihan = document.getElementById('muka-surat-input').value;
     const ayatMula = document.getElementById('ayat-mula-select').value;
     const ayatAkhir = document.getElementById('ayat-akhir-select').value;
 
-    // Validasi
     if (!surahTerpilih) return alert("Sila pilih Surah!");
     if (!msPilihan) return alert("Sila pastikan Muka Surat diisi!");
     if (!tajwidVal || !fasohahVal) return alert("Sila berikan markah Tajwid & Fasohah!");
@@ -156,18 +151,17 @@ async function hantarRekod() {
         tahap: "TAHAP " + tahap,
         surah: surahTerpilih,
         mukasurat: msPilihan,
-        ayat_range: `${ayatMula}-${ayatAkhir}`, // Gabungkan ayat mula-akhir
+        ayat_range: `${ayatMula}-${ayatAkhir}`,
         tajwid: tajwidVal,
         fasohah: fasohahVal,
         ulasan: "Rekod Tasmik Smart 2050"
     };
 
-    // Simpan Offline & Sync
     let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
     queue.push(payload);
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert(`Alhamdulillah! Rekod ${surahTerpilih} (Ayat ${ayatMula}-${ayatAkhir}) disimpan.`);
+    alert(`Alhamdulillah! Rekod ${surahTerpilih} disimpan.`);
     
     if (navigator.onLine) await syncNow();
 }
