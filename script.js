@@ -69,10 +69,14 @@ const silibusData = {
 };
 
 let surahTerpilih = "";
+let mediaRecorder;
+let audioChunks = [];
+let base64AudioData = null; // Memori transit audio
 
 window.onload = () => {
     populatePeserta();
     renderSilibus(); 
+    initFloatingButtons();
 };
 
 function populatePeserta() {
@@ -84,7 +88,6 @@ function populatePeserta() {
     ).join('');
 }
 
-// LOGIK RENDER BASE64 (MENGATASI RALAT TANDA CALIT)
 function renderSilibus() {
     const tahap = document.getElementById('tahap-select').value;
     const surahGrid = document.getElementById('silibus-display'); 
@@ -133,6 +136,64 @@ function pilihSurah(surahObj, elemen) {
     }
 }
 
+// ==========================================
+// 2. LOGIK FLOATING BUTTONS & AUDIO
+// ==========================================
+function initFloatingButtons() {
+    const floatingHTML = `
+        <div class="floating-controls">
+            <div id="record-floating-btn" class="floating-btn" title="Rakam Suara">
+                <span id="mic-icon">🎤</span>
+            </div>
+            <div id="submit-floating-btn" class="floating-btn">
+                <span>Hantar Rekod</span>
+                <span style="font-size: 1.2rem;">🚀</span>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', floatingHTML);
+
+    const recBtn = document.getElementById('record-floating-btn');
+    const micIcon = document.getElementById('mic-icon');
+    const submitBtn = document.getElementById('submit-floating-btn');
+
+    recBtn.addEventListener('click', async () => {
+        if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/ogg' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        base64AudioData = reader.result.split(',')[1];
+                        alert("✅ Rakaman suara sedia! Tekan butang Hantar untuk proses.");
+                    };
+                };
+
+                mediaRecorder.start();
+                recBtn.classList.add('recording');
+                micIcon.innerText = "🛑";
+            } catch (err) {
+                alert("Sila benarkan akses mikrofon.");
+            }
+        } else {
+            mediaRecorder.stop();
+            recBtn.classList.remove('recording');
+            micIcon.innerText = "🎤";
+        }
+    });
+
+    submitBtn.addEventListener('click', () => hantarRekod());
+}
+
+// ==========================================
+// 3. PENGHANTARAN DATA (SHEETS & TELEGRAM)
+// ==========================================
 async function hantarRekod() {
     const namaPeserta = document.getElementById('nama-select').value;
     const tahap = document.getElementById('tahap-select').value;
@@ -157,7 +218,8 @@ async function hantarRekod() {
         ayat_range: `${ayatMula}-${ayatAkhir}`,
         tajwid: tajwidVal,
         fasohah: fasohahVal,
-        ulasan: "Rekod Tasmik Smart 2050"
+        ulasan: "Rekod Tasmik Smart 2050",
+        audioData: base64AudioData // Suntik audio ke sini
     };
 
     let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
@@ -165,6 +227,10 @@ async function hantarRekod() {
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
     alert(`Rekod ${surahTerpilih} disimpan!`);
+    
+    // Reset audio memori selepas simpan
+    base64AudioData = null; 
+    
     if (navigator.onLine) await syncNow();
 }
 
@@ -178,7 +244,7 @@ async function syncNow() {
         try {
             await fetch(GAS_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                // Mode 'no-cors' ditukar ke default untuk pastikan JSON sampai dengan betul
                 body: JSON.stringify(queue[i])
             });
         } catch (e) { 
