@@ -140,22 +140,12 @@ function pilihSurah(surahObj, elemen) {
 // 2. LOGIK FLOATING BUTTONS & AUDIO
 // ==========================================
 function initFloatingButtons() {
-    const floatingHTML = `
-        <div class="floating-controls">
-            <div id="record-floating-btn" class="floating-btn" title="Rakam Suara">
-                <span id="mic-icon">🎤</span>
-            </div>
-            <div id="submit-floating-btn" class="floating-btn">
-                <span>Hantar Rekod</span>
-                <span style="font-size: 1.2rem;">🚀</span>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', floatingHTML);
-
+    // HTML sudah ada dalam index.html, kita hanya sambungkan event listener
     const recBtn = document.getElementById('record-floating-btn');
     const micIcon = document.getElementById('mic-icon');
     const submitBtn = document.getElementById('submit-floating-btn');
+
+    if (!recBtn || !submitBtn) return;
 
     recBtn.addEventListener('click', async () => {
         if (!mediaRecorder || mediaRecorder.state === 'inactive') {
@@ -244,7 +234,6 @@ async function syncNow() {
         try {
             await fetch(GAS_URL, {
                 method: 'POST',
-                // Mode 'no-cors' ditukar ke default untuk pastikan JSON sampai dengan betul
                 body: JSON.stringify(queue[i])
             });
         } catch (e) { 
