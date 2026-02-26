@@ -78,15 +78,50 @@ const silibusData = {
 window.onload = () => {
     populatePeserta();
     renderSilibus();
+    janaGridNombor(); // <--- Fungsi baru dipanggil di sini
 };
+
+// --- FUNGSI JANA GRID NOMBOR (PICKER) ---
+function janaGridNombor() {
+    const mukaGrid = document.getElementById('muka-surat-grid');
+    const ayatGrid = document.getElementById('ayat-grid');
+
+    if (!mukaGrid || !ayatGrid) return;
+
+    // Jana Muka Surat (1 - 604)
+    for (let i = 1; i <= 604; i++) {
+        let btn = document.createElement('div');
+        btn.className = 'num-btn';
+        btn.innerText = i;
+        btn.onclick = function() {
+            pilihNombor('muka-surat', i, btn);
+        };
+        mukaGrid.appendChild(btn);
+    }
+
+    // Jana Ayat (1 - 150)
+    for (let i = 1; i <= 150; i++) {
+        let btn = document.createElement('div');
+        btn.className = 'num-btn';
+        btn.innerText = i;
+        btn.onclick = function() {
+            pilihNombor('ayat', i, btn);
+        };
+        ayatGrid.appendChild(btn);
+    }
+}
+
+function pilihNombor(jenis, nilai, elemen) {
+    const parent = elemen.parentElement;
+    parent.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
+    elemen.classList.add('active');
+    document.getElementById(jenis + '-input').value = nilai;
+}
 
 function populatePeserta() {
     const select = document.getElementById('nama-select');
     if (!select) return;
-    
-    // Algorithm: Susun umur dari paling muda [cite: 2026-01-24]
     const sorted = [...dataPeserta].sort((a, b) => a.umur - b.umur); 
-    
     select.innerHTML = sorted.map(p => 
         `<option value="${p.nama}">${p.nama} (${p.umur} Thn)</option>`
     ).join('');
@@ -101,30 +136,39 @@ function renderSilibus() {
         <div class="surah-card glass-card">
             <div class="tahap-badge">TAHAP ${tahap}</div>
             <h3>${s.nama}</h3>
-            <p>M/S ${s.ms} | Ayat ${s.ayat}</p>
+            <p>Cadangan: M/S ${s.ms} | Ayat ${s.ayat}</p>
             
             <div class="skor-container">
                 <div class="skor-item">
                     <label>Tajwid</label>
-                    <input type="number" id="t-${s.nama}" min="1" max="5" value="5">
+                    <input type="number" id="t-${s.nama}" min="1" max="10" value="10">
                 </div>
                 <div class="skor-item">
                     <label>Fasohah</label>
-                    <input type="number" id="f-${s.nama}" min="1" max="5" value="5">
+                    <input type="number" id="f-${s.nama}" min="1" max="10" value="10">
                 </div>
             </div>
 
-            <button class="btn-check" onclick="hantarRekod('${s.nama}', '${tahap}', '${s.ms}', '${s.ayat}')">
+            <button class="btn-check" onclick="hantarRekod('${s.nama}', '${tahap}')">
                 SIMPAN & NOTIFY
             </button>
         </div>
     `).join('');
 }
 
-async function hantarRekod(surah, tahap, ms, ayat) {
+async function hantarRekod(surah, tahap) {
     const namaPeserta = document.getElementById('nama-select').value;
     const tajwid = document.getElementById(`t-${surah}`).value;
     const fasohah = document.getElementById(`f-${surah}`).value;
+    
+    // Ambil nilai daripada Grid Nombor (Picker)
+    const msPilihan = document.getElementById('muka-surat-input').value;
+    const ayatPilihan = document.getElementById('ayat-input').value;
+
+    if (!msPilihan || !ayatPilihan) {
+        alert("Sila pilih Muka Surat dan Ayat daripada grid terlebih dahulu!");
+        return;
+    }
 
     const payload = {
         ustaz: pembimbingInfo.nama,
@@ -133,18 +177,18 @@ async function hantarRekod(surah, tahap, ms, ayat) {
         jenis_bacaan: (tahap === "7") ? "Muraja'ah" : "Tasmik",
         tahap: "TAHAP " + tahap,
         surah: surah,
-        mukasurat: ms,
-        ayat_range: ayat,
+        mukasurat: msPilihan, // Guna nilai picker
+        ayat_range: ayatPilihan, // Guna nilai picker
         tajwid: tajwid,
         fasohah: fasohah,
-        ulasan: "Selesai tasmik secara digital."
+        ulasan: "Selesai tasmik secara digital (Picker Mode)."
     };
 
     let queue = JSON.parse(localStorage.getItem('tasmik_queue')) || [];
     queue.push(payload);
     localStorage.setItem('tasmik_queue', JSON.stringify(queue));
 
-    alert(`Rekod ${surah} untuk ${namaPeserta} disimpan!`);
+    alert(`Rekod ${surah} (M/S: ${msPilihan}) untuk ${namaPeserta} disimpan!`);
     
     if (navigator.onLine) {
         await syncNow();
