@@ -7,6 +7,8 @@
     <meta name="msapplication-tap-highlight" content="no">
     
     <title>TASMIK 2050 | SMART SYSTEM</title>
+    
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
@@ -21,7 +23,7 @@
     <div class="glass-card">
         <label for="nama-select">Nama Pelajar</label>
         <select id="nama-select">
-            </select>
+        </select>
 
         <label for="tahap-select">Pilih Tahap Silibus</label>
         <select id="tahap-select" onchange="renderSilibus()">
@@ -36,7 +38,7 @@
 
         <label>Pilih Surah</label>
         <div id="silibus-display" class="number-grid">
-            </div>
+        </div>
 
         <label>Maklumat Bacaan (Auto-Detect)</label>
         <div class="compact-picker-row">
@@ -93,6 +95,16 @@
 </div>
 
 <script src="script.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('PWA: Service Worker Berjaya Didaftar!', reg))
+        .catch(err => console.log('PWA: Service Worker Gagal!', err));
+    });
+  }
+</script>
 
 </body>
 </html>
