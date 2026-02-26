@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>TASMIK 2050 | SMART SYSTEM</title>
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css"> 
+</head>
 <body>
 
 <div class="container">
@@ -34,17 +35,29 @@
         <div id="silibus-display" class="number-grid">
             </div>
 
-        <label>Muka Surat (1-604)</label>
-        <div class="number-grid" id="muka-surat-grid">
+        <label>Maklumat Bacaan (Auto-Detect)</label>
+        <div class="compact-picker-row">
+            <div class="picker-box">
+                <span class="picker-label">M/S</span>
+                <input type="number" id="muka-surat-input" value="1" min="1" max="604">
             </div>
-        <input type="hidden" id="muka-surat-input">
 
-        <label>Ayat (Pilihan)</label>
-        <div class="number-grid" id="ayat-grid">
+            <div class="picker-box">
+                <span class="picker-label">AYAT MULA</span>
+                <select id="ayat-mula-select">
+                    <option value="1">1</option>
+                </select>
             </div>
-        <input type="hidden" id="ayat-input">
 
-        <div class="rating-section">
+            <div class="picker-box">
+                <span class="picker-label">AYAT AKHIR</span>
+                <select id="ayat-akhir-select">
+                    <option value="1">1</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="rating-section" style="margin-top: 20px;">
             <div class="rating-container">
                 <label>⭐ Markah Tajwid</label>
                 <div class="button-group">
